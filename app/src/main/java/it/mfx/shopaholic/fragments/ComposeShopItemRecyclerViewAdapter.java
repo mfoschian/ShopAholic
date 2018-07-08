@@ -19,9 +19,14 @@ public class ComposeShopItemRecyclerViewAdapter extends RecyclerView.Adapter<Com
     private final List<ShopItem> mValues;
     //private final OnListFragmentInteractionListener mListener;
 
-    public ComposeShopItemRecyclerViewAdapter() {
+    public interface ShopItemRowListener {
+        void onItemSelected( ShopItem item );
+    }
+    private ShopItemRowListener mListener = null;
+
+    public ComposeShopItemRecyclerViewAdapter(ShopItemRowListener listener) {
         mValues = new ArrayList<ShopItem>();
-        //mListener = listener;
+        mListener = listener;
     }
 
     public void setItems(List<ShopItem> items) {
@@ -46,13 +51,13 @@ public class ComposeShopItemRecyclerViewAdapter extends RecyclerView.Adapter<Com
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
+
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onItemSelected(holder.mItem);
                 }
-                */
+
             }
         });
     }

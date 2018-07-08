@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +23,10 @@ import java.util.List;
 /**
  * A fragment representing a list of Items..
  */
-public class ShopItemListFragment extends Fragment {
+public class ShopItemListFragment extends Fragment implements ComposeShopItemRecyclerViewAdapter.ShopItemRowListener {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
+    private static final String ARG_SHOP_NAME = "shopname";
+    private String mShopName;
     private int mColumnCount = 1;
     //private OnListFragmentInteractionListener mListener;
     private ShopListViewModel modelView;
@@ -41,10 +41,10 @@ public class ShopItemListFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static ShopItemListFragment newInstance(int columnCount) {
+    public static ShopItemListFragment newInstance(String shopName) {
         ShopItemListFragment fragment = new ShopItemListFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putString(ARG_SHOP_NAME, shopName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,7 +54,7 @@ public class ShopItemListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            mShopName = getArguments().getString(ARG_SHOP_NAME, null);
         }
     }
 
@@ -86,12 +86,17 @@ public class ShopItemListFragment extends Fragment {
             modelView = ViewModelProviders.of(this.getActivity()).get(ShopListViewModel.class);
             subscribeUI();
 
-            adapter = new ComposeShopItemRecyclerViewAdapter();
+            adapter = new ComposeShopItemRecyclerViewAdapter(this);
             recyclerView.setAdapter(adapter);
+
         }
         return view;
     }
 
+    @Override
+    public void onItemSelected(ShopItem item) {
+        Log.i("MFX", "Clicked item " + item.getName());
+    }
 
     @Override
     public void onAttach(Context context) {

@@ -167,7 +167,7 @@ public class ComposeListActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return ShopItemListFragment.newInstance(position + 1);
+            return ShopItemListFragment.newInstance(null);
         }
 
         @Override
