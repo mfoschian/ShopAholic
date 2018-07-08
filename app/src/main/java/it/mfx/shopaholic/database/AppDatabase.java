@@ -13,7 +13,7 @@ import java.util.UUID;
 
 import it.mfx.shopaholic.models.ShopItem;
 
-@Database(entities = {ShopItem.class}, version = 1)
+@Database(entities = {ShopItem.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static String dbName = "shopaholicDB";
@@ -21,8 +21,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract ShopItemDao itemsDao();
 
     public static AppDatabase newInstance(Context context) {
-        AppDatabase db = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, dbName)
-                            //.fallbackToDesctructiveMigration()
+        RoomDatabase.Builder<AppDatabase> b = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, dbName);
+        AppDatabase db = b.fallbackToDestructiveMigration()
                             .build();
         return db;
     }

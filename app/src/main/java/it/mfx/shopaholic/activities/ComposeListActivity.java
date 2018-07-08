@@ -3,6 +3,9 @@ package it.mfx.shopaholic.activities;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
+import android.icu.text.SearchIterator;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,6 +74,15 @@ public class ComposeListActivity extends AppCompatActivity {
 
 
     private void addNewItem() {
+
+        Context ctx = this;
+        Intent intent = new Intent(ctx, SearchItemActivity.class);
+        //intent.putExtra(DocumentDetailFragment.ARG_ITEM_ID, doc_id);
+
+        ctx.startActivity(intent);
+
+
+        /*
         final View v = mViewPager;
         app().insertTestData(new ShopApplication.Callback<Integer>() {
                                @Override
@@ -82,10 +95,11 @@ public class ComposeListActivity extends AppCompatActivity {
 
                                @Override
                                public void onError(Exception e) {
-
+                                   Log.e("MFX",e.toString());
                                }
                            }
         );
+        */
 
     }
 

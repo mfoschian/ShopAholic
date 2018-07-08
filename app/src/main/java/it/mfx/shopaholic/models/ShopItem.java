@@ -13,22 +13,24 @@ public class ShopItem {
 
     private String name;
 
+    private int qty = 0;
     private String description;
     private String shopName;
     private String zoneName;
 
+    @NonNull
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 
     public String getName() {
         return name;
     }
-    public void setName(String n) {
+    public void setName(@NonNull String n) {
         this.name = n;
     }
 
@@ -38,6 +40,9 @@ public class ShopItem {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public int getQty() { return qty; }
+    public void setQty(int qty) { this.qty = qty; }
 
     public String getShopName() {
         return shopName;

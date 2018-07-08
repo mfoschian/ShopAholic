@@ -44,9 +44,11 @@ public class ComposeShopItemRecyclerViewAdapter extends RecyclerView.Adapter<Com
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getName());
-        holder.mContentView.setText(mValues.get(position).getDescription());
+        ShopItem item = mValues.get(position);
+        holder.mItem = item;
+        holder.qtyView.setText(""+ item.getQty());
+        holder.nameView.setText(item.getName());
+        holder.descriptionView.setText(item.getDescription());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,20 +71,22 @@ public class ComposeShopItemRecyclerViewAdapter extends RecyclerView.Adapter<Com
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
+        public final TextView qtyView;
+        public final TextView nameView;
+        public final TextView descriptionView;
         public ShopItem mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = view.findViewById(R.id.item_number);
-            mContentView = view.findViewById(R.id.content);
+            qtyView = view.findViewById(R.id.item_qty);
+            nameView = view.findViewById(R.id.item_name);
+            descriptionView = view.findViewById(R.id.item_description);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + nameView.getText() + "'";
         }
     }
 }
