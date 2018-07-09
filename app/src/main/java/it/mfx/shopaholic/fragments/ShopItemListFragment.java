@@ -95,7 +95,7 @@ public class ShopItemListFragment extends Fragment implements ComposeShopItemRec
 
     @Override
     public void onItemSelected(ShopItem item) {
-        Log.i("MFX", "Clicked item " + item.getName());
+        Log.i("MFX", "Clicked item " + item.item.name);
     }
 
     @Override

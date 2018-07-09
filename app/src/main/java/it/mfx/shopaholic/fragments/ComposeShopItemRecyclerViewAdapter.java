@@ -46,9 +46,9 @@ public class ComposeShopItemRecyclerViewAdapter extends RecyclerView.Adapter<Com
     public void onBindViewHolder(final ViewHolder holder, int position) {
         ShopItem item = mValues.get(position);
         holder.mItem = item;
-        holder.qtyView.setText(""+ item.getQty());
-        holder.nameView.setText(item.getName());
-        holder.descriptionView.setText(item.getDescription());
+        holder.qtyView.setText(""+ item.qty);
+        holder.nameView.setText(item.item.name);
+        holder.descriptionView.setText(item.item.description);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

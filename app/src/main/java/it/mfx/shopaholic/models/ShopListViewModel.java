@@ -11,20 +11,21 @@ import it.mfx.shopaholic.ShopApplication;
 public class ShopListViewModel extends ViewModel {
 
 
-    private MutableLiveData<List<ShopItem>> mItems;
+    private MutableLiveData<List<ShopItem>> mShopItems;
+    private MutableLiveData<List<Item>> mItems;
 
     public LiveData<List<ShopItem>> getShopItems() {
-        if( mItems == null ) {
-            mItems = new MutableLiveData<>();
+        if( mShopItems == null ) {
+            mShopItems = new MutableLiveData<>();
         }
-        return mItems;
+        return mShopItems;
     }
     /**/
     public void setShopItems(List<ShopItem> items) {
-        if( mItems == null ) {
-            mItems = new MutableLiveData<>();
+        if( mShopItems == null ) {
+            mShopItems = new MutableLiveData<>();
         }
-        mItems.postValue( items );
+        mShopItems.postValue( items );
     }
     /**/
 
@@ -33,6 +34,18 @@ public class ShopListViewModel extends ViewModel {
             mItems = items;
     }
     */
-
+    public LiveData<List<Item>> getItems() {
+        if( mItems == null ) {
+            mItems = new MutableLiveData<>();
+        }
+        return mItems;
+    }
+    /**/
+    public void setItems(List<Item> items) {
+        if( mItems == null ) {
+            mItems = new MutableLiveData<>();
+        }
+        mItems.postValue( items );
+    }
 
 }

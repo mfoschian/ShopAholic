@@ -1,62 +1,26 @@
 package it.mfx.shopaholic.models;
 
+import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.RoomWarnings;
 import android.support.annotation.NonNull;
 
-@Entity(tableName = "items")
+@Entity(tableName = "shopitems")
 public class ShopItem {
 
     @PrimaryKey //(autoGenerate = true)
     @NonNull
-    private String id;
+    public String sid;
 
-    private String name;
+    public String itemid;
 
-    private int qty = 0;
-    private String description;
-    private String shopName;
-    private String zoneName;
+    public int qty = 0;
 
-    @NonNull
-    public String getId() {
-        return id;
-    }
-
-    public void setId(@NonNull String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public void setName(@NonNull String n) {
-        this.name = n;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getQty() { return qty; }
-    public void setQty(int qty) { this.qty = qty; }
-
-    public String getShopName() {
-        return shopName;
-    }
-    public void setShopName(String n) {
-        this.shopName = n;
-    }
-
-    public String getZoneName() {
-        return zoneName;
-    }
-    public void setZoneName(String n) {
-        this.zoneName = n;
-    }
+    @Embedded
+    @SuppressWarnings(RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
+    public Item item;
 
 
 }

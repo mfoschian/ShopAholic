@@ -11,14 +11,16 @@ import java.util.List;
 import java.util.UUID;
 
 
+import it.mfx.shopaholic.models.Item;
 import it.mfx.shopaholic.models.ShopItem;
 
-@Database(entities = {ShopItem.class}, version = 2)
+@Database(entities = {Item.class, ShopItem.class}, version = 7, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static String dbName = "shopaholicDB";
 
-    public abstract ShopItemDao itemsDao();
+    public abstract ItemDao itemDao();
+    public abstract ShopItemDao shopItemDao();
 
     public static AppDatabase newInstance(Context context) {
         RoomDatabase.Builder<AppDatabase> b = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, dbName);
@@ -31,19 +33,32 @@ public abstract class AppDatabase extends RoomDatabase {
         return UUID.randomUUID().toString();
     }
 
-    public ShopItem addItem( ShopItem item ) {
-        if( item.getId() == null ) {
-            item.setId( newId() );
+    public Item addItem( Item item ) {
+        if( item.id == null ) {
+            item.id = newId();
         }
-        itemsDao().insertAll(item);
+        itemDao().insertAll(item);
         return item;
     }
 
-    public LiveData<List<ShopItem>> getLiveShopItems() {
-          return itemsDao().getLiveAll();
+    public LiveData<List<Item>> getLiveItems() { return itemDao().getAll(); }
+
+    public List<Item> getItems() { return itemDao().getAllSync(); }
+
+
+
+
+
+    public ShopItem addShopItem( ShopItem item ) {
+        if( item.sid == null ) {
+            item.sid = newId();
+        }
+        shopItemDao().insertAll(item);
+        return item;
     }
 
-    public List<ShopItem> getShopItems() {
-        return itemsDao().getAll();
-    }
+    public LiveData<List<ShopItem>> getLiveShopItems() { return shopItemDao().getAll(); }
+
+    public List<ShopItem> getShopItems() { return shopItemDao().getAllSync(); }
+
 }

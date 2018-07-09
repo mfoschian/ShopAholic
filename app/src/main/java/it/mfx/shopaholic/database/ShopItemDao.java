@@ -13,24 +13,24 @@ import it.mfx.shopaholic.models.ShopItem;
 
 @Dao
 public interface ShopItemDao {
-    @Query("SELECT * FROM items")
-    List<ShopItem> getAll();
+    @Query("SELECT * FROM shopitems")
+    List<ShopItem> getAllSync();
 
-    @Query("SELECT * FROM items")
-    LiveData<List<ShopItem>> getLiveAll();
+    @Query("SELECT * FROM shopitems")
+    LiveData<List<ShopItem>> getAll();
 
-    @Query("SELECT * FROM items where id LIKE :id")
+    @Query("SELECT * FROM shopitems where id LIKE :id")
     ShopItem findById(String id);
 
-    @Query("SELECT * FROM items where name LIKE :name")
+    @Query("SELECT * FROM shopitems s, items i where i.id = s.itemid AND s.name LIKE :name")
     ShopItem findByName(String name);
 
-    @Query("SELECT COUNT(*) from items")
+    @Query("SELECT COUNT(*) from shopitems")
     int countItems();
 
     @Insert
-    void insertAll(ShopItem... items);
+    void insertAll(ShopItem... shopitems);
 
     @Delete
-    void delete(ShopItem item);
+    void delete(ShopItem shopitem);
 }

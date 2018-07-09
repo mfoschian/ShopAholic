@@ -109,7 +109,7 @@ public class SearchItemActivity extends AppCompatActivity implements SearchItemR
 
     @Override
     public void onItemSelected(ShopItem item) {
-        Log.i("MFX","Selected item " + item.getName());
+        Log.i("MFX","Selected item " + item.item.name);
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -162,8 +162,8 @@ public class SearchItemActivity extends AppCompatActivity implements SearchItemR
         public void onBindViewHolder(final ItemViewHolder holder, int position) {
             ShopItem item = mValues.get(position);
             holder.mItem = item;
-            holder.nameView.setText(item.getName());
-            holder.descriptionView.setText(item.getDescription());
+            holder.nameView.setText(item.item.name);
+            holder.descriptionView.setText(item.item.description);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import it.mfx.shopaholic.database.AppDatabase;
+import it.mfx.shopaholic.models.Item;
 import it.mfx.shopaholic.models.ShopItem;
 
 public class ShopApplication extends Application {
@@ -24,6 +25,17 @@ public class ShopApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        insertTestData(new Callback<Integer>() {
+            @Override
+            public void onSuccess(Integer result) {
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 
 
@@ -37,17 +49,31 @@ public class ShopApplication extends Application {
             @Override
             public void run() {
                 try {
-                    ShopItem x = new ShopItem();
-                    x.setName("pippo");
-                    x.setDescription("ciao ciao");
-                    db().addItem(x);
 
-                    x = new ShopItem();
-                    x.setName("pluto");
-                    x.setDescription("aufwiedersehen");
-                    db().addItem(x);
+                    int n = db().itemDao().countItems();
+                    if( n == 0 ) {
+                        Item x = new Item();
+                        x.name = "Burro";
+                        x.description = "Latterie friulane";
+                        x = db().addItem(x);
 
-                    cb.onSuccess( 2);
+                        Item y = new Item();
+                        y.name = "Latte";
+                        y.description = "Zymil";
+                        y = db().addItem(y);
+
+                        ShopItem s = new ShopItem();
+                        s.itemid = x.id;
+                        s.qty = 1;
+                        s = db().addShopItem(s);
+
+                        ShopItem q = new ShopItem();
+                        q.itemid = y.id;
+                        q.qty = 1;
+                        q = db().addShopItem(q);
+
+                        cb.onSuccess(4);
+                    }
                 }
                 catch( Exception err ) {
                     cb.onError(err);
@@ -62,7 +88,7 @@ public class ShopApplication extends Application {
             @Override
             public void run() {
                 try {
-                    List<ShopItem> res = db().itemsDao().getAll();
+                    List<ShopItem> res = db().shopItemDao().getAllSync();
                     cb.onSuccess(res);
                 } catch (Exception err) {
                     cb.onError(err);
