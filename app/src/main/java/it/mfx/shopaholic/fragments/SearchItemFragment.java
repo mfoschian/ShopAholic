@@ -10,10 +10,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -58,6 +61,25 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
         });
     }
 
+
+    private TextWatcher filterListener = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String filter = s.toString();
+            viewModel.filterItems( filter );
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,6 +88,10 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
 
         viewModel = ViewModelProviders.of(this.getActivity()).get(ShopListViewModel.class);
 
+        EditText filterText = view.findViewById((R.id.editText));
+        if( filterText != null ) {
+            filterText.addTextChangedListener(filterListener);
+        }
 
         RecyclerView r = view.findViewById(R.id.searchresults);
         if (r != null ) {
@@ -99,12 +125,17 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof Listener) {
+            mListener = (Listener) context;
+        }
+        else
+            mListener = null;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        //mListener = null;
+        mListener = null;
     }
 
 

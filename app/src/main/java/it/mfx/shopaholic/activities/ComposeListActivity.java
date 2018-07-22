@@ -159,6 +159,26 @@ public class ComposeListActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 String item_id = data.getData().toString();
 
+                ShopItem sit = modelView.findByItemId(item_id);
+                if( sit != null ) {
+                    if( sit.qty > 0 )
+                        return;
+
+                    // Qty == 0 : increment by one
+                    sit.qty = 1;
+                    modelView.saveChanges(new ShopApplication.Callback<Integer>() {
+                        @Override
+                        public void onSuccess(Integer result) {
+                            modelView.loadShopItems();
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                        }
+                    });
+                    return;
+                }
 
                 ShopItem shopItem = new ShopItem();
                 shopItem.item_id = item_id;

@@ -164,6 +164,20 @@ public class ShopApplication extends Application {
         });
     }
 
+    public void getAsyncItemsByName(final String filter, @NonNull final Callback<List<Item>> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<Item> res = db().itemDao().findByName(filter);
+                    cb.onSuccess(res);
+                } catch (Exception err) {
+                    cb.onError(err);
+                }
+            }
+        });
+    }
+
     public LiveData<List<ShopItem>> getLiveShopItems() {
         return db().getLiveShopItems();
     }
@@ -198,6 +212,22 @@ public class ShopApplication extends Application {
             public void run() {
                 try {
                     saveShopItem(shopItem);
+                    if( cb != null )
+                        cb.onSuccess(true);
+                } catch (Exception err) {
+                    if( cb != null )
+                        cb.onError(err);
+                }
+            }
+        });
+    }
+
+    public void asyncAddShopItem(final ShopItem shopItem, final Callback<Boolean> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    db().addShopItem(shopItem);
                     if( cb != null )
                         cb.onSuccess(true);
                 } catch (Exception err) {

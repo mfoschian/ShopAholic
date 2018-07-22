@@ -22,7 +22,7 @@ public interface ItemDao {
     Item findById(String id);
 
     @Query("SELECT * FROM items where name LIKE :name")
-    Item findByName(String name);
+    List<Item> findByName(String name);
 
     @Query("SELECT COUNT(*) from items")
     int countItems();

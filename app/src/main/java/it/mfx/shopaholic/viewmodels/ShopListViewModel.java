@@ -66,6 +66,25 @@ public class ShopListViewModel extends AndroidViewModel {
         setItems(items);
     }
 
+    public void filterItems( String filter ) {
+        if( filter == null || "".equals(filter)) {
+            loadItems();
+        }
+        else {
+            String pattern = "%" + filter + "%";
+            app.getAsyncItemsByName(pattern, new ShopApplication.Callback<List<Item>>() {
+                @Override
+                public void onSuccess(List<Item> result) {
+                    setItems(result);
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                }
+            });
+        }
+    }
 
     public void loadShopItems() {
         app.getAsyncShopItems(new ShopApplication.Callback<List<ShopItem>>() {
@@ -86,9 +105,20 @@ public class ShopListViewModel extends AndroidViewModel {
         setShopItems(items);
     }
 
+    public ShopItem findByItemId(String item_id) {
+        List<ShopItem> items = mShopItems.getValue();
+        if( items == null )
+            return null;
+
+        for( ShopItem shopItem : items ) {
+            if( item_id.equals( shopItem.item_id ) )
+                return shopItem;
+        }
+        return null;
+    }
 
     public void addShopItem(ShopItem shopItem, ShopApplication.Callback<Boolean> cb ) {
-        app.asyncSaveShopItem(shopItem, cb);
+        app.asyncAddShopItem(shopItem, cb);
     }
 
     public void saveChanges(ShopApplication.Callback<Integer> cb) {

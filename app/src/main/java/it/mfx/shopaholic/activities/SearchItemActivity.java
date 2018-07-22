@@ -31,8 +31,6 @@ public class SearchItemActivity extends AppCompatActivity implements SearchItemF
 
         modelView = ViewModelProviders.of(this).get(ShopListViewModel.class);
 
-        View fragment = findViewById(R.id.search_fragment);
-
         subscribeUI();
 
         refreshData();
