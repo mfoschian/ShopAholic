@@ -55,25 +55,29 @@ public class ShopApplication extends Application {
                         Item x = new Item();
                         x.name = "Burro";
                         x.description = "Latterie friulane";
+                        x.shopName = "A&O";
+                        x.zoneName = "frigo";
                         x = db().addItem(x);
 
                         Item y = new Item();
                         y.name = "Latte";
                         y.description = "Zymil";
+                        x.shopName = "A&O";
                         y = db().addItem(y);
 
                         ShopItem s = new ShopItem();
-                        s.itemid = x.id;
+                        s.item_id = x.id;
                         s.qty = 1;
                         s = db().addShopItem(s);
 
                         ShopItem q = new ShopItem();
-                        q.itemid = y.id;
+                        q.item_id = y.id;
                         q.qty = 1;
                         q = db().addShopItem(q);
 
-                        cb.onSuccess(4);
+                        cb.onSuccess(2);
                     }
+                    cb.onSuccess(0);
                 }
                 catch( Exception err ) {
                     cb.onError(err);
@@ -83,7 +87,22 @@ public class ShopApplication extends Application {
 
     }
 
+
     public void getAsyncShopItems(@NonNull final Callback<List<ShopItem>> cb) {
+        insertTestData(new Callback<Integer>() {
+            @Override
+            public void onSuccess(Integer result) {
+                List<ShopItem> res = db().shopItemDao().getAllSync();
+                cb.onSuccess(res);
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+                cb.onError(e);
+            }
+        });
+        /*
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -95,6 +114,7 @@ public class ShopApplication extends Application {
                 }
             }
         });
+        */
     }
 
     public LiveData<List<ShopItem>> getLiveShopItems() {

@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import it.mfx.shopaholic.R;
 import it.mfx.shopaholic.models.ShopItem;
-import it.mfx.shopaholic.models.ShopListViewModel;
+import it.mfx.shopaholic.viewmodels.ShopListViewModel;
 
 import java.util.List;
 

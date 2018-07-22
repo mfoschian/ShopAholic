@@ -14,7 +14,7 @@ import java.util.UUID;
 import it.mfx.shopaholic.models.Item;
 import it.mfx.shopaholic.models.ShopItem;
 
-@Database(entities = {Item.class, ShopItem.class}, version = 7, exportSchema = false)
+@Database(entities = {Item.class, ShopItem.class}, version = 8, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static String dbName = "shopaholicDB";

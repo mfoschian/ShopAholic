@@ -24,7 +24,7 @@ import java.util.List;
 import it.mfx.shopaholic.R;
 import it.mfx.shopaholic.ShopApplication;
 import it.mfx.shopaholic.models.ShopItem;
-import it.mfx.shopaholic.models.ShopListViewModel;
+import it.mfx.shopaholic.viewmodels.ShopListViewModel;
 
 
 interface SearchItemRowListener {

@@ -1,14 +1,11 @@
 package it.mfx.shopaholic.activities;
 
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.icu.text.SearchIterator;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -17,14 +14,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -32,7 +24,7 @@ import it.mfx.shopaholic.R;
 import it.mfx.shopaholic.ShopApplication;
 import it.mfx.shopaholic.fragments.ShopItemListFragment;
 import it.mfx.shopaholic.models.ShopItem;
-import it.mfx.shopaholic.models.ShopListViewModel;
+import it.mfx.shopaholic.viewmodels.ShopListViewModel;
 
 public class ComposeListActivity extends AppCompatActivity {
 
@@ -58,18 +50,7 @@ public class ComposeListActivity extends AppCompatActivity {
     }
 
     private void refreshData() {
-        app().getAsyncShopItems(new ShopApplication.Callback<List<ShopItem>>() {
-            @Override
-            public void onSuccess(List<ShopItem> result) {
-                modelView.setShopItems(result);
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        });
-
+        modelView.loadData();
     }
 
 
