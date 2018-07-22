@@ -17,6 +17,11 @@ public class ShopApplication extends Application {
 
     private AppDatabase db = null;
 
+
+    public final class IntentRequests {
+        final public static int CHOOSE_ITEM_REQUEST = 8000;
+    }
+
     AppDatabase db() {
         if( db == null ) {
             db = AppDatabase.newInstance( this.getApplicationContext());
@@ -105,14 +110,22 @@ public class ShopApplication extends Application {
 
     }
 
+    public List<Item> getItems() {
+        List<Item> res = db().itemDao().getAllSync();
+        return res;
+    }
+
+    public List<ShopItem> getShopItems() {
+        List<ShopItem> res = db().shopItemDao().getAllSync();
+        return res;
+    }
 
     public void getAsyncShopItems(@NonNull final Callback<List<ShopItem>> cb) {
         insertTestData(new Callback<Integer>() {
             @Override
             public void onSuccess(Integer result) {
-                List<ShopItem> res = db().shopItemDao().getAllSync();
+                List<ShopItem> res = getShopItems();
                 cb.onSuccess(res);
-
             }
 
             @Override
@@ -135,7 +148,7 @@ public class ShopApplication extends Application {
         */
     }
 
-   public void getAsyncItems(@NonNull final Callback<List<Item>> cb) {
+    public void getAsyncItems(@NonNull final Callback<List<Item>> cb) {
         insertTestData(new Callback<Integer>() {
             @Override
             public void onSuccess(Integer result) {
@@ -159,6 +172,10 @@ public class ShopApplication extends Application {
         db().saveShopItems(shopItems);
     }
 
+    public void saveShopItem( ShopItem shopItem ) {
+        db().saveShopItem(shopItem);
+    }
+
     public void asyncSaveShopItems(final List<ShopItem> shopItems, final Callback<Integer> cb) {
         AsyncTask.execute(new Runnable() {
             @Override
@@ -174,4 +191,21 @@ public class ShopApplication extends Application {
             }
         });
     }
+
+    public void asyncSaveShopItem(final ShopItem shopItem, final Callback<Boolean> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    saveShopItem(shopItem);
+                    if( cb != null )
+                        cb.onSuccess(true);
+                } catch (Exception err) {
+                    if( cb != null )
+                        cb.onError(err);
+                }
+            }
+        });
+    }
+
 }

@@ -4,7 +4,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.AnimatorRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -54,39 +53,36 @@ public class ComposeListActivity extends AppCompatActivity {
     }
 
     private void refreshData() {
-        modelView.loadData();
+        modelView.loadShopItems();
         modelView.loadItems();
     }
 
 
-    private void addNewItem() {
-
-        /*
+    private void openItemSelectGUI() {
         Context ctx = this;
         Intent intent = new Intent(ctx, SearchItemActivity.class);
         //intent.putExtra(DocumentDetailFragment.ARG_ITEM_ID, doc_id);
+        startActivityForResult(intent,ShopApplication.IntentRequests.CHOOSE_ITEM_REQUEST);
+    }
 
-        ctx.startActivity(intent);
-        */
-/*
-        FragmentManager fragmentManager = this.getSupportFragmentManager();
+    private void addNewItem() {
 
-        if( searchItemFragment == null ) {
-            searchItemFragment = new SearchItemFragment();
+        // First save changes
+        modelView.saveChanges(new ShopApplication.Callback<Integer>() {
+            @Override
+            public void onSuccess(Integer result) {
+                // Then open select GUI for item
+                openItemSelectGUI();
+            }
 
-            fragmentManager.beginTransaction()
-                    //.setCustomAnimations()
-                    .add(searchItemFragment, "searchItemFragment")
-                    .show(searchItemFragment)
-                    .commit();
-        }
-        else {
-            fragmentManager.beginTransaction()
-                    .show(searchItemFragment)
-                    .commit();
-        }
-*/
-        mItemList.setVisibility(View.VISIBLE);
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
+
+        //mItemList.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -104,8 +100,8 @@ public class ComposeListActivity extends AppCompatActivity {
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        mItemList = findViewById(R.id.item_list_fragment);
-        mItemList.setVisibility(View.INVISIBLE);
+        //mItemList = findViewById(R.id.item_list_fragment);
+        //mItemList.setVisibility(View.INVISIBLE);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +150,33 @@ public class ComposeListActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ShopApplication.IntentRequests.CHOOSE_ITEM_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                String item_id = data.getData().toString();
+
+
+                ShopItem shopItem = new ShopItem();
+                shopItem.item_id = item_id;
+                shopItem.qty = 1;
+
+                modelView.addShopItem(shopItem, new ShopApplication.Callback<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean result) {
+                        modelView.loadShopItems();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
+            }
+        }
     }
 
     /**

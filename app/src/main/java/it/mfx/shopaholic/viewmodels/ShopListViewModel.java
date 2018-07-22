@@ -4,7 +4,6 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
 
 import java.util.List;
@@ -62,8 +61,13 @@ public class ShopListViewModel extends AndroidViewModel {
         });
     }
 
+    public void loadItemsSync() {
+        List<Item> items = app.getItems();
+        setItems(items);
+    }
 
-    public void loadData() {
+
+    public void loadShopItems() {
         app.getAsyncShopItems(new ShopApplication.Callback<List<ShopItem>>() {
             @Override
             public void onSuccess(List<ShopItem> result) {
@@ -77,6 +81,20 @@ public class ShopListViewModel extends AndroidViewModel {
         });
     }
 
+    public void loadShopItemsSync() {
+        List<ShopItem> items = app.getShopItems();
+        setShopItems(items);
+    }
+
+
+    public void addShopItem(ShopItem shopItem, ShopApplication.Callback<Boolean> cb ) {
+        app.asyncSaveShopItem(shopItem, cb);
+    }
+
+    public void saveChanges(ShopApplication.Callback<Integer> cb) {
+        List<ShopItem> items = getShopItems().getValue();
+        app.asyncSaveShopItems(items, cb);
+    }
 
     @Override
     protected void onCleared() {

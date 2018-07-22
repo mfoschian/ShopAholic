@@ -21,7 +21,6 @@ import java.util.List;
 
 import it.mfx.shopaholic.R;
 import it.mfx.shopaholic.models.Item;
-import it.mfx.shopaholic.models.ShopItem;
 import it.mfx.shopaholic.viewmodels.ShopListViewModel;
 
 
@@ -36,7 +35,7 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
     private Adapter adapter;
 
     public interface Listener {
-        void onClose();
+        void onItemSelected(Item item);
     }
 
     private Listener mListener = null;
@@ -47,7 +46,7 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
     }
 
     public void setListener(Listener l) {
-
+        mListener = l;
     }
 
     void subscribeUI() {
@@ -63,7 +62,7 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_search, container);
+        View view = inflater.inflate(R.layout.item_search, container);
 
         viewModel = ViewModelProviders.of(this.getActivity()).get(ShopListViewModel.class);
 
@@ -93,6 +92,8 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
     @Override
     public void onItemSelected(Item item) {
         Log.i("MFX","Selected item " + item.name);
+        if(mListener != null)
+            mListener.onItemSelected(item);
     }
 
     @Override
@@ -146,7 +147,7 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
         @Override
         public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.activity_search_item, parent, false);
+                    .inflate(R.layout.item_search_item, parent, false);
 
             return new ItemViewHolder(view);
         }
@@ -155,6 +156,8 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
         public void onBindViewHolder(final ItemViewHolder holder, int position) {
             Item item = mValues.get(position);
             holder.mItem = item;
+            holder.nameView.setText(item.name);
+            holder.descriptionView.setText(item.description);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override

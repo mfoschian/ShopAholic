@@ -44,11 +44,4 @@
         app:backgroundTint="@color/colorAccentGreen"
         app:srcCompat="@drawable/ic_add_shopping_cart_black_24dp" />
 
-    <fragment
-        android:id="@+id/item_list_fragment"
-        android:name="it.mfx.shopaholic.fragments.SearchItemFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left|right" />
-
 </android.support.design.widget.CoordinatorLayout>

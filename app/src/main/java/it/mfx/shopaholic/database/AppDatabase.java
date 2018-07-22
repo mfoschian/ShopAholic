@@ -64,4 +64,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public void saveShopItems(List<ShopItem> shopitems ) {
         shopItemDao().update(shopitems);
     }
+    public void saveShopItem(ShopItem shopitem) {
+        shopItemDao().update(shopitem);
+    }
 }
