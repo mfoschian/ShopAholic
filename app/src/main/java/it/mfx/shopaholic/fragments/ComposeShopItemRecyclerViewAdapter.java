@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import it.mfx.shopaholic.R;
@@ -42,13 +44,31 @@ public class ComposeShopItemRecyclerViewAdapter extends RecyclerView.Adapter<Com
         return new ViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        ShopItem item = mValues.get(position);
+        final ShopItem item = mValues.get(position);
         holder.mItem = item;
         holder.qtyView.setText(""+ item.qty);
         holder.nameView.setText(item.item.name);
         holder.descriptionView.setText(item.item.description);
+
+        holder.btnPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                item.qty++;
+                holder.qtyView.setText(""+ item.qty);
+            }
+        });
+
+        holder.btnMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if( item.qty > 0 ) {
+                    item.qty--;
+                    holder.qtyView.setText(""+ item.qty);                }
+            }
+        });
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +94,8 @@ public class ComposeShopItemRecyclerViewAdapter extends RecyclerView.Adapter<Com
         public final TextView qtyView;
         public final TextView nameView;
         public final TextView descriptionView;
+        public final ImageButton btnPlus;
+        public final ImageButton btnMinus;
         public ShopItem mItem;
 
         public ViewHolder(View view) {
@@ -82,6 +104,8 @@ public class ComposeShopItemRecyclerViewAdapter extends RecyclerView.Adapter<Com
             qtyView = view.findViewById(R.id.item_qty);
             nameView = view.findViewById(R.id.item_name);
             descriptionView = view.findViewById(R.id.item_description);
+            btnPlus = view.findViewById(R.id.buttonPlus);
+            btnMinus = view.findViewById(R.id.buttonMinus);
         }
 
         @Override

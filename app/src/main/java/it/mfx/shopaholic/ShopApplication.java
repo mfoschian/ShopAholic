@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.telecom.Call;
 
 import java.util.List;
 
@@ -121,4 +122,23 @@ public class ShopApplication extends Application {
         return db().getLiveShopItems();
     }
 
+    public void saveShopItems( List<ShopItem> shopItems ) {
+        db().saveShopItems(shopItems);
+    }
+
+    public void asyncSaveShopItems(final List<ShopItem> shopItems, final Callback<Integer> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    saveShopItems(shopItems);
+                    if( cb != null )
+                        cb.onSuccess(0);
+                } catch (Exception err) {
+                    if( cb != null )
+                        cb.onError(err);
+                }
+            }
+        });
+    }
 }

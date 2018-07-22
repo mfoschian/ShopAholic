@@ -14,7 +14,7 @@ import java.util.UUID;
 import it.mfx.shopaholic.models.Item;
 import it.mfx.shopaholic.models.ShopItem;
 
-@Database(entities = {Item.class, ShopItem.class}, version = 8, exportSchema = false)
+@Database(entities = {Item.class, ShopItem.class}, version = 9, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static String dbName = "shopaholicDB";
@@ -61,4 +61,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public List<ShopItem> getShopItems() { return shopItemDao().getAllSync(); }
 
+    public void saveShopItems(List<ShopItem> shopitems ) {
+        shopItemDao().update(shopitems);
+    }
 }

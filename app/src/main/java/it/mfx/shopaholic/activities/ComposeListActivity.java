@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.AnimatorRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import it.mfx.shopaholic.R;
 import it.mfx.shopaholic.ShopApplication;
+import it.mfx.shopaholic.fragments.SearchItemFragment;
 import it.mfx.shopaholic.fragments.ShopItemListFragment;
 import it.mfx.shopaholic.models.ShopItem;
 import it.mfx.shopaholic.viewmodels.ShopListViewModel;
@@ -37,6 +39,7 @@ public class ComposeListActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private SearchItemFragment searchItemFragment = null;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -56,31 +59,30 @@ public class ComposeListActivity extends AppCompatActivity {
 
     private void addNewItem() {
 
+        /*
         Context ctx = this;
         Intent intent = new Intent(ctx, SearchItemActivity.class);
         //intent.putExtra(DocumentDetailFragment.ARG_ITEM_ID, doc_id);
 
         ctx.startActivity(intent);
-
-
-        /*
-        final View v = mViewPager;
-        app().insertTestData(new ShopApplication.Callback<Integer>() {
-                               @Override
-                               public void onSuccess(Integer result) {
-                                   Snackbar.make(v, "Inserted " + result + " records", Snackbar.LENGTH_LONG)
-                                           .setAction("Action", null).show();
-                                    refreshData();
-
-                               }
-
-                               @Override
-                               public void onError(Exception e) {
-                                   Log.e("MFX",e.toString());
-                               }
-                           }
-        );
         */
+
+        FragmentManager fragmentManager = this.getSupportFragmentManager();
+
+        if( searchItemFragment == null ) {
+            searchItemFragment = new SearchItemFragment();
+
+            fragmentManager.beginTransaction()
+                    //.setCustomAnimations()
+                    .add(searchItemFragment, "searchItemFragment")
+                    .show(searchItemFragment)
+                    .commit();
+        }
+        else {
+            fragmentManager.beginTransaction()
+                    .show(searchItemFragment)
+                    .commit();
+        }
 
     }
 

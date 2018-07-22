@@ -6,6 +6,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import java.util.List;
 
@@ -13,16 +14,16 @@ import it.mfx.shopaholic.models.ShopItem;
 
 @Dao
 public interface ShopItemDao {
-    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id)")
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) order by i.name")
     List<ShopItem> getAllSync();
 
-    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id)")
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) order by i.name")
     LiveData<List<ShopItem>> getAll();
 
     @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.item_id LIKE :id")
     ShopItem findByItemId(String id);
 
-    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) WHERE s.name LIKE :name")
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) WHERE s.name LIKE :name order by i.name")
     ShopItem findByItemName(String name);
 
     @Query("SELECT COUNT(*) from shopitems")
@@ -34,4 +35,9 @@ public interface ShopItemDao {
     @Delete
     void delete(ShopItem shopitem);
 
+    @Update
+    void update(ShopItem... shopItems);
+
+    @Update
+    void update(List<ShopItem>  shopItems);
 }

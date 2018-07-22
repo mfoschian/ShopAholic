@@ -73,4 +73,16 @@ public class ShopListViewModel extends AndroidViewModel {
             }
         });
     }
+
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+
+        List<ShopItem> sitems = mShopItems.getValue();
+        if( sitems == null )
+            return;
+
+         app.asyncSaveShopItems(sitems, null);
+    }
 }
