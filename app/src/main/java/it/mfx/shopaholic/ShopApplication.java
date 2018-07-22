@@ -10,6 +10,7 @@ import java.util.List;
 
 import it.mfx.shopaholic.database.AppDatabase;
 import it.mfx.shopaholic.models.Item;
+import it.mfx.shopaholic.models.Shop;
 import it.mfx.shopaholic.models.ShopItem;
 
 public class ShopApplication extends Application {
@@ -53,6 +54,7 @@ public class ShopApplication extends Application {
 
                     int n = db().itemDao().countItems();
                     if( n == 0 ) {
+                        /*
                         Item x = new Item();
                         x.name = "Burro";
                         x.description = "Latterie friulane";
@@ -75,8 +77,23 @@ public class ShopApplication extends Application {
                         q.item_id = y.id;
                         q.qty = 1;
                         q = db().addShopItem(q);
+                        */
 
-                        cb.onSuccess(2);
+                        int item_to_insert = 20;
+                        for( int i=0; i<item_to_insert; i++ ) {
+                            Item item = new Item();
+                            item.name = "Test " + i;
+                            item.shopName = "A&O";
+                            item.description = "Descrizione " + i;
+                            db().addItem(item);
+
+                            ShopItem si = new ShopItem();
+                            si.item_id = item.id;
+                            si.qty = 1;
+                            db().addShopItem(si);
+                        }
+
+                        cb.onSuccess(item_to_insert);
                     }
                     cb.onSuccess(0);
                 }
@@ -116,6 +133,22 @@ public class ShopApplication extends Application {
             }
         });
         */
+    }
+
+   public void getAsyncItems(@NonNull final Callback<List<Item>> cb) {
+        insertTestData(new Callback<Integer>() {
+            @Override
+            public void onSuccess(Integer result) {
+                List<Item> res = db().itemDao().getAllSync();
+                cb.onSuccess(res);
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+                cb.onError(e);
+            }
+        });
     }
 
     public LiveData<List<ShopItem>> getLiveShopItems() {

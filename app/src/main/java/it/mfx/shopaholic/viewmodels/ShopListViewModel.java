@@ -22,20 +22,14 @@ public class ShopListViewModel extends AndroidViewModel {
         app = (ShopApplication)application;
     }
 
-    private MutableLiveData<List<ShopItem>> mShopItems;
-    private MutableLiveData<List<Item>> mItems;
+    private MutableLiveData<List<ShopItem>> mShopItems = new MutableLiveData<>();
+    private MutableLiveData<List<Item>> mItems = new MutableLiveData<>();
 
     public LiveData<List<ShopItem>> getShopItems() {
-        if( mShopItems == null ) {
-            mShopItems = new MutableLiveData<>();
-        }
         return mShopItems;
     }
     /**/
     public void setShopItems(List<ShopItem> items) {
-        if( mShopItems == null ) {
-            mShopItems = new MutableLiveData<>();
-        }
         mShopItems.postValue( items );
     }
     /**/
@@ -46,17 +40,26 @@ public class ShopListViewModel extends AndroidViewModel {
     }
     */
     public LiveData<List<Item>> getItems() {
-        if( mItems == null ) {
-            mItems = new MutableLiveData<>();
-        }
         return mItems;
     }
     /**/
     public void setItems(List<Item> items) {
-        if( mItems == null ) {
-            mItems = new MutableLiveData<>();
-        }
         mItems.postValue( items );
+    }
+
+
+    public void loadItems() {
+        app.getAsyncItems(new ShopApplication.Callback<List<Item>>() {
+            @Override
+            public void onSuccess(List<Item> result) {
+                setItems(result);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 

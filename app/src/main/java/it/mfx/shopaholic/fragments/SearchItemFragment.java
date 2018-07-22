@@ -68,17 +68,17 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
         viewModel = ViewModelProviders.of(this.getActivity()).get(ShopListViewModel.class);
 
 
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+        RecyclerView r = view.findViewById(R.id.searchresults);
+        if (r != null ) {
+            Context context = r.getContext();
             if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                r.setLayoutManager(new LinearLayoutManager(context));
             } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+                r.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
             adapter = new Adapter(this);
-            recyclerView.setAdapter(adapter);
+            r.setAdapter(adapter);
 
             subscribeUI();
 

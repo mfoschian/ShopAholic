@@ -40,6 +40,7 @@ public class ComposeListActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private SearchItemFragment searchItemFragment = null;
+    private View mItemList = null;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -54,6 +55,7 @@ public class ComposeListActivity extends AppCompatActivity {
 
     private void refreshData() {
         modelView.loadData();
+        modelView.loadItems();
     }
 
 
@@ -66,7 +68,7 @@ public class ComposeListActivity extends AppCompatActivity {
 
         ctx.startActivity(intent);
         */
-
+/*
         FragmentManager fragmentManager = this.getSupportFragmentManager();
 
         if( searchItemFragment == null ) {
@@ -83,7 +85,8 @@ public class ComposeListActivity extends AppCompatActivity {
                     .show(searchItemFragment)
                     .commit();
         }
-
+*/
+        mItemList.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -100,6 +103,9 @@ public class ComposeListActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        mItemList = findViewById(R.id.item_list_fragment);
+        mItemList.setVisibility(View.INVISIBLE);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
