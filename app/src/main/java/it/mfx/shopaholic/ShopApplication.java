@@ -33,6 +33,7 @@ public class ShopApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        /*
         insertTestData(new Callback<Integer>() {
             @Override
             public void onSuccess(Integer result) {
@@ -44,6 +45,7 @@ public class ShopApplication extends Application {
 
             }
         });
+        */
     }
 
 
@@ -65,30 +67,6 @@ public class ShopApplication extends Application {
 
                     int n = db().itemDao().countItems();
                     if( n == 0 ) {
-                        /*
-                        Item x = new Item();
-                        x.name = "Burro";
-                        x.description = "Latterie friulane";
-                        x.shopName = "A&O";
-                        x.zoneName = "frigo";
-                        x = db().addItem(x);
-
-                        Item y = new Item();
-                        y.name = "Latte";
-                        y.description = "Zymil";
-                        x.shopName = "A&O";
-                        y = db().addItem(y);
-
-                        ShopItem s = new ShopItem();
-                        s.item_id = x.id;
-                        s.qty = 1;
-                        s = db().addShopItem(s);
-
-                        ShopItem q = new ShopItem();
-                        q.item_id = y.id;
-                        q.qty = 1;
-                        q = db().addShopItem(q);
-                        */
 
                         int item_to_insert = 20;
                         for( int i=0; i<item_to_insert; i++ ) {
@@ -126,16 +104,15 @@ public class ShopApplication extends Application {
     }
 
     public void getItemsAsync(@NonNull final Callback<List<Item>> cb) {
-        insertTestData(new Callback<Integer>() {
+        AsyncTask.execute(new Runnable() {
             @Override
-            public void onSuccess(Integer result) {
-                List<Item> res = getItems();
-                cb.onSuccess(res);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                cb.onError(e);
+            public void run() {
+                try {
+                    List<Item> res = getItems();
+                    cb.onSuccess(res);
+                } catch (Exception err) {
+                    cb.onError(err);
+                }
             }
         });
     }
@@ -219,31 +196,17 @@ public class ShopApplication extends Application {
     }
 
     public void getShopItemsAsync(@NonNull final Callback<List<ShopItem>> cb) {
-        insertTestData(new Callback<Integer>() {
-            @Override
-            public void onSuccess(Integer result) {
-                List<ShopItem> res = getShopItems();
-                cb.onSuccess(res);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                cb.onError(e);
-            }
-        });
-        /*
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    List<ShopItem> res = db().shopItemDao().getAllSync();
+                    List<ShopItem> res = getShopItems();
                     cb.onSuccess(res);
                 } catch (Exception err) {
                     cb.onError(err);
                 }
             }
         });
-        */
     }
 
     public LiveData<List<ShopItem>> getLiveShopItems() {
