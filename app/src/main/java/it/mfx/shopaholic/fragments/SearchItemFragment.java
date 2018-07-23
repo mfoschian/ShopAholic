@@ -4,8 +4,10 @@ package it.mfx.shopaholic.fragments;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -23,6 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.mfx.shopaholic.R;
+import it.mfx.shopaholic.ShopApplication;
+import it.mfx.shopaholic.activities.EditItemActivity;
+import it.mfx.shopaholic.activities.SearchItemActivity;
 import it.mfx.shopaholic.models.Item;
 import it.mfx.shopaholic.viewmodels.ShopListViewModel;
 
@@ -36,9 +42,11 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
     private int mColumnCount = 1;
     private ShopListViewModel viewModel;
     private Adapter adapter;
+    private EditText filterText;
 
     public interface Listener {
         void onItemSelected(Item item);
+        void onNewItemRequest(String suggestedName);
     }
 
     private Listener mListener = null;
@@ -80,6 +88,18 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
         }
     };
 
+
+    private void openNewItemGUI() {
+        String name = "";
+        if( filterText != null )
+            name = filterText.getText().toString();
+
+        if( mListener != null )
+            mListener.onNewItemRequest(name);
+
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,9 +108,19 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
 
         viewModel = ViewModelProviders.of(this.getActivity()).get(ShopListViewModel.class);
 
-        EditText filterText = view.findViewById((R.id.editText));
+        filterText = view.findViewById((R.id.editText));
         if( filterText != null ) {
             filterText.addTextChangedListener(filterListener);
+        }
+
+        FloatingActionButton button = view.findViewById(R.id.but_item_new);
+        if( button != null ) {
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openNewItemGUI();
+                }
+            });
         }
 
         RecyclerView r = view.findViewById(R.id.searchresults);

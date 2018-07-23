@@ -33,11 +33,15 @@ public abstract class AppDatabase extends RoomDatabase {
         return UUID.randomUUID().toString();
     }
 
+    public void saveItem( Item item ) {
+        itemDao().insertAll(item);
+    }
+
     public Item addItem( Item item ) {
         if( item.id == null ) {
             item.id = newId();
         }
-        itemDao().insertAll(item);
+        saveItem(item);
         return item;
     }
 
@@ -45,7 +49,9 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public List<Item> getItems() { return itemDao().getAllSync(); }
 
-
+    public Item getItem(String item_id) {
+        return itemDao().findById(item_id);
+    }
 
 
 

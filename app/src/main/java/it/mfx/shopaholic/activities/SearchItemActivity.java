@@ -2,6 +2,7 @@ package it.mfx.shopaholic.activities;
 
 import android.app.Fragment;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import it.mfx.shopaholic.R;
 import it.mfx.shopaholic.ShopApplication;
 import it.mfx.shopaholic.fragments.SearchItemFragment;
 import it.mfx.shopaholic.models.Item;
+import it.mfx.shopaholic.models.ShopItem;
 import it.mfx.shopaholic.viewmodels.ShopListViewModel;
 
 
@@ -58,5 +60,36 @@ public class SearchItemActivity extends AppCompatActivity implements SearchItemF
         setResult(RESULT_OK, data);
 
         finish();
+    }
+
+    @Override
+    public void onNewItemRequest(String suggestedName) {
+        Context ctx = this;
+        Intent intent = new Intent(ctx, EditItemActivity.class);
+        intent.putExtra(EditItemActivity.SUGGESTED_NAME_ARG, suggestedName);
+        startActivityForResult(intent, ShopApplication.IntentRequests.EDIT_ITEM_REQUEST);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ShopApplication.IntentRequests.EDIT_ITEM_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                String item_id = data.getData().toString();
+
+                app().getItemByIdAsync(item_id, new ShopApplication.Callback<Item>() {
+                    @Override
+                    public void onSuccess(Item item) {
+                        onItemSelected(item);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
+
+            }
+        }
     }
 }

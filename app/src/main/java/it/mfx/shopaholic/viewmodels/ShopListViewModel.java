@@ -46,9 +46,14 @@ public class ShopListViewModel extends AndroidViewModel {
         mItems.postValue( items );
     }
 
+    public void addItem(Item item) {
+        List<Item> items = mItems.getValue();
+        items.add(item);
+        mItems.postValue( items );
+    }
 
     public void loadItems() {
-        app.getAsyncItems(new ShopApplication.Callback<List<Item>>() {
+        app.getItemsAsync(new ShopApplication.Callback<List<Item>>() {
             @Override
             public void onSuccess(List<Item> result) {
                 setItems(result);
@@ -72,7 +77,7 @@ public class ShopListViewModel extends AndroidViewModel {
         }
         else {
             String pattern = "%" + filter + "%";
-            app.getAsyncItemsByName(pattern, new ShopApplication.Callback<List<Item>>() {
+            app.getItemsByNameAsync(pattern, new ShopApplication.Callback<List<Item>>() {
                 @Override
                 public void onSuccess(List<Item> result) {
                     setItems(result);
@@ -87,7 +92,7 @@ public class ShopListViewModel extends AndroidViewModel {
     }
 
     public void loadShopItems() {
-        app.getAsyncShopItems(new ShopApplication.Callback<List<ShopItem>>() {
+        app.getShopItemsAsync(new ShopApplication.Callback<List<ShopItem>>() {
             @Override
             public void onSuccess(List<ShopItem> result) {
                 setShopItems(result);
@@ -118,12 +123,12 @@ public class ShopListViewModel extends AndroidViewModel {
     }
 
     public void addShopItem(ShopItem shopItem, ShopApplication.Callback<Boolean> cb ) {
-        app.asyncAddShopItem(shopItem, cb);
+        app.addShopItemAsync(shopItem, cb);
     }
 
     public void saveChanges(ShopApplication.Callback<Integer> cb) {
         List<ShopItem> items = getShopItems().getValue();
-        app.asyncSaveShopItems(items, cb);
+        app.saveShopItemsAsync(items, cb);
     }
 
     @Override
@@ -134,6 +139,6 @@ public class ShopListViewModel extends AndroidViewModel {
         if( sitems == null )
             return;
 
-         app.asyncSaveShopItems(sitems, null);
+         app.saveShopItemsAsync(sitems, null);
     }
 }

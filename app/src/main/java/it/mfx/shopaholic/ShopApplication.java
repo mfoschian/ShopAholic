@@ -20,6 +20,7 @@ public class ShopApplication extends Application {
 
     public final class IntentRequests {
         final public static int CHOOSE_ITEM_REQUEST = 8000;
+        final public static int EDIT_ITEM_REQUEST = 8001;
     }
 
     AppDatabase db() {
@@ -48,6 +49,11 @@ public class ShopApplication extends Application {
 
     public interface Callback<T> {
         void onSuccess(T result);
+        void onError(Exception e);
+    }
+
+    public interface CallbackSimple {
+        void onSuccess();
         void onError(Exception e);
     }
 
@@ -110,17 +116,109 @@ public class ShopApplication extends Application {
 
     }
 
+    //==============================================
+    //  Items
+    //==============================================
+
     public List<Item> getItems() {
         List<Item> res = db().itemDao().getAllSync();
         return res;
     }
+
+    public void getItemsAsync(@NonNull final Callback<List<Item>> cb) {
+        insertTestData(new Callback<Integer>() {
+            @Override
+            public void onSuccess(Integer result) {
+                List<Item> res = getItems();
+                cb.onSuccess(res);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                cb.onError(e);
+            }
+        });
+    }
+
+    public void getItemByIdAsync(@NonNull final String item_id, @NonNull final Callback<Item> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Item res = db().itemDao().findById(item_id);
+                    cb.onSuccess(res);
+                } catch (Exception err) {
+                    cb.onError(err);
+                }
+            }
+        });
+    }
+
+    public void getItemsByNameAsync(final String filter, @NonNull final Callback<List<Item>> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<Item> res = db().itemDao().findByName(filter);
+                    cb.onSuccess(res);
+                } catch (Exception err) {
+                    cb.onError(err);
+                }
+            }
+        });
+    }
+
+    public void saveItem( Item item ) {
+        db().saveItem(item);
+    }
+
+    public void saveItemAsync(final Item item, final Callback<Boolean> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    saveItem(item);
+                    if( cb != null )
+                        cb.onSuccess(true);
+                } catch (Exception err) {
+                    if( cb != null )
+                        cb.onError(err);
+                }
+            }
+        });
+    }
+
+    public void addItem( Item item ) {
+        db().addItem(item);
+    }
+
+    public void addItemAsync(final Item item, final Callback<Boolean> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    addItem(item);
+                    if( cb != null )
+                        cb.onSuccess(true);
+                } catch (Exception err) {
+                    if( cb != null )
+                        cb.onError(err);
+                }
+            }
+        });
+    }
+
+
+    //==============================================
+    //  ShopItems
+    //==============================================
 
     public List<ShopItem> getShopItems() {
         List<ShopItem> res = db().shopItemDao().getAllSync();
         return res;
     }
 
-    public void getAsyncShopItems(@NonNull final Callback<List<ShopItem>> cb) {
+    public void getShopItemsAsync(@NonNull final Callback<List<ShopItem>> cb) {
         insertTestData(new Callback<Integer>() {
             @Override
             public void onSuccess(Integer result) {
@@ -148,36 +246,6 @@ public class ShopApplication extends Application {
         */
     }
 
-    public void getAsyncItems(@NonNull final Callback<List<Item>> cb) {
-        insertTestData(new Callback<Integer>() {
-            @Override
-            public void onSuccess(Integer result) {
-                List<Item> res = db().itemDao().getAllSync();
-                cb.onSuccess(res);
-
-            }
-
-            @Override
-            public void onError(Exception e) {
-                cb.onError(e);
-            }
-        });
-    }
-
-    public void getAsyncItemsByName(final String filter, @NonNull final Callback<List<Item>> cb) {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    List<Item> res = db().itemDao().findByName(filter);
-                    cb.onSuccess(res);
-                } catch (Exception err) {
-                    cb.onError(err);
-                }
-            }
-        });
-    }
-
     public LiveData<List<ShopItem>> getLiveShopItems() {
         return db().getLiveShopItems();
     }
@@ -190,7 +258,7 @@ public class ShopApplication extends Application {
         db().saveShopItem(shopItem);
     }
 
-    public void asyncSaveShopItems(final List<ShopItem> shopItems, final Callback<Integer> cb) {
+    public void saveShopItemsAsync(final List<ShopItem> shopItems, final Callback<Integer> cb) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -206,7 +274,7 @@ public class ShopApplication extends Application {
         });
     }
 
-    public void asyncSaveShopItem(final ShopItem shopItem, final Callback<Boolean> cb) {
+    public void saveShopItemAsync(final ShopItem shopItem, final Callback<Boolean> cb) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -222,7 +290,7 @@ public class ShopApplication extends Application {
         });
     }
 
-    public void asyncAddShopItem(final ShopItem shopItem, final Callback<Boolean> cb) {
+    public void addShopItemAsync(final ShopItem shopItem, final Callback<Boolean> cb) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {

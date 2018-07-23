@@ -158,7 +158,6 @@ public class ComposeListActivity extends AppCompatActivity {
         if (requestCode == ShopApplication.IntentRequests.CHOOSE_ITEM_REQUEST) {
             if (resultCode == RESULT_OK) {
                 String item_id = data.getData().toString();
-
                 ShopItem sit = modelView.findByItemId(item_id);
                 if( sit != null ) {
                     if( sit.qty > 0 )
