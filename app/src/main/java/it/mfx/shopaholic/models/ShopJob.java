@@ -14,5 +14,7 @@ public class ShopJob {
 
     public boolean done = false;
 
+    //From Version 10
+    //public int date;
 
 }

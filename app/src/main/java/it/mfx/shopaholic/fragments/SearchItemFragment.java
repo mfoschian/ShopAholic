@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import it.mfx.shopaholic.viewmodels.ShopListViewModel;
 
 interface ItemViewListener {
     void onItemSelected(Item item);
+    void onItemEdited(Item item);
 }
 
 public class SearchItemFragment extends Fragment implements ItemViewListener {
@@ -47,6 +49,7 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
     public interface Listener {
         void onItemSelected(Item item);
         void onNewItemRequest(String suggestedName);
+        void onEditItemRequest(String item_id);
     }
 
     private Listener mListener = null;
@@ -153,6 +156,13 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
     }
 
     @Override
+    public void onItemEdited(Item item) {
+        Log.i("MFX","Selected item " + item.name);
+        if(mListener != null)
+            mListener.onEditItemRequest(item.id);
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof Listener) {
@@ -173,6 +183,7 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
         public final View mView;
         public final TextView nameView;
         public final TextView descriptionView;
+        public final ImageView butEdit;
         public Item mItem;
 
         public ItemViewHolder(View view) {
@@ -180,6 +191,7 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
             mView = view;
             nameView = view.findViewById(R.id.item_name);
             descriptionView = view.findViewById(R.id.item_description);
+            butEdit = view.findViewById(R.id.item_edit_button);
         }
 
         @Override
@@ -223,13 +235,18 @@ public class SearchItemFragment extends Fragment implements ItemViewListener {
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     if (null != mListener) {
-                        // Notify the active callbacks interface (the activity, if the
-                        // fragment is attached to one) that an item has been selected.
                         mListener.onItemSelected(holder.mItem);
                     }
+                }
+            });
 
+            holder.butEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (null != mListener) {
+                        mListener.onItemEdited(holder.mItem);
+                    }
                 }
             });
         }

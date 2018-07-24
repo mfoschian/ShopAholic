@@ -4,13 +4,11 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.telecom.Call;
 
 import java.util.List;
 
 import it.mfx.shopaholic.database.AppDatabase;
 import it.mfx.shopaholic.models.Item;
-import it.mfx.shopaholic.models.Shop;
 import it.mfx.shopaholic.models.ShopItem;
 
 public class ShopApplication extends Application {
@@ -210,7 +208,7 @@ public class ShopApplication extends Application {
     }
 
     public LiveData<List<ShopItem>> getLiveShopItems() {
-        return db().getLiveShopItems();
+        return db().getShopItemsLive();
     }
 
     public void saveShopItems( List<ShopItem> shopItems ) {

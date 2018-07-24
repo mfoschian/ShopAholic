@@ -27,21 +27,15 @@ public class ShopListViewModel extends AndroidViewModel {
     public LiveData<List<ShopItem>> getShopItems() {
         return mShopItems;
     }
-    /**/
-    public void setShopItems(List<ShopItem> items) {
+
+    private void setShopItems(List<ShopItem> items) {
         mShopItems.postValue( items );
     }
-    /**/
 
-    /*
-    public void setShopItems(LiveData<List<ShopItem>> items) {
-            mItems = items;
-    }
-    */
     public LiveData<List<Item>> getItems() {
         return mItems;
     }
-    /**/
+
     public void setItems(List<Item> items) {
         mItems.postValue( items );
     }

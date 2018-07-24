@@ -72,6 +72,14 @@ public class SearchItemActivity extends AppCompatActivity implements SearchItemF
     }
 
     @Override
+    public void onEditItemRequest(String suggestedName) {
+        Context ctx = this;
+        Intent intent = new Intent(ctx, EditItemActivity.class);
+        intent.putExtra(EditItemActivity.ITEM_ID_ARG, suggestedName);
+        startActivityForResult(intent, ShopApplication.IntentRequests.EDIT_ITEM_REQUEST);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ShopApplication.IntentRequests.EDIT_ITEM_REQUEST) {
             if (resultCode == RESULT_OK) {

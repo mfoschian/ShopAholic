@@ -1,8 +1,11 @@
 package it.mfx.shopaholic.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import it.mfx.shopaholic.R;
 import it.mfx.shopaholic.ShopApplication;
 import it.mfx.shopaholic.models.Item;
+import it.mfx.shopaholic.viewmodels.ItemFormViewModel;
 
 public class EditItemActivity extends AppCompatActivity {
 
@@ -36,6 +40,8 @@ public class EditItemActivity extends AppCompatActivity {
         }
     };
 
+    private ItemFormViewModel viewModel;
+
     protected ShopApplication app() {
         return (ShopApplication) this.getApplication();
     }
@@ -47,25 +53,39 @@ public class EditItemActivity extends AppCompatActivity {
 
     private void save(@NonNull final SaveListener listener) {
 
-        Item item = new Item();
+        Item item = viewModel.getItem().getValue();
 
         // Retrieve item data from GUI
         retrieveDataFor(item);
         //
         final Item fitem = item;
 
-        app().addItemAsync(item, new ShopApplication.Callback<Boolean>() {
-            @Override
-            public void onSuccess(Boolean result) {
-                listener.onSaved(fitem);
-            }
+        if( viewModel.isNewItem() ) {
+            app().addItemAsync(item, new ShopApplication.Callback<Boolean>() {
+                @Override
+                public void onSuccess(Boolean result) {
+                    listener.onSaved(fitem);
+                }
 
-            @Override
-            public void onError(Exception e) {
-                listener.onError(e.getMessage());
-            }
-        });
+                @Override
+                public void onError(Exception e) {
+                    listener.onError(e.getMessage());
+                }
+            });
+        }
+        else {
+            app().saveItemAsync(item, new ShopApplication.Callback<Boolean>() {
+                @Override
+                public void onSuccess(Boolean result) {
+                    listener.onSaved(fitem);
+                }
 
+                @Override
+                public void onError(Exception e) {
+                    listener.onError(e.getMessage());
+                }
+            });
+        }
     }
 
     private void returnItem(final Item item) {
@@ -97,6 +117,14 @@ public class EditItemActivity extends AppCompatActivity {
         Log.i("ITEMEDT", msg);
     }
 
+    private void subscribeUI() {
+        viewModel.getItem().observe(this, new Observer<Item>() {
+            @Override
+            public void onChanged(@Nullable Item item) {
+                renderDataFor(item);
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +139,12 @@ public class EditItemActivity extends AppCompatActivity {
             }
         });
 
+        viewModel = ViewModelProviders.of(this).get(ItemFormViewModel.class);
+        final ItemFormViewModel vm = viewModel;
+
+        subscribeUI();
+
+        // Retrieve item to edit or to create ...
         Intent intent = getIntent();
         String item_id = intent.getStringExtra(ITEM_ID_ARG);
         String sugg_name = intent.getStringExtra(SUGGESTED_NAME_ARG);
@@ -118,7 +152,7 @@ public class EditItemActivity extends AppCompatActivity {
             app().getItemByIdAsync(item_id, new ShopApplication.Callback<Item>() {
                 @Override
                 public void onSuccess(Item result) {
-                    renderDataFor(result);
+                    vm.setExistingItem(result);
                 }
 
                 @Override
@@ -130,7 +164,8 @@ public class EditItemActivity extends AppCompatActivity {
         else if( sugg_name != null ) {
             Item item = new Item();
             item.name = sugg_name;
-            renderDataFor(item);
+            //renderDataFor(item);
+            viewModel.setNewItem(item);
         }
 
     }

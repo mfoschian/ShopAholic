@@ -20,6 +20,13 @@ public interface ShopItemDao {
     @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) order by i.name")
     LiveData<List<ShopItem>> getAll();
 
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.name")
+    LiveData<List<ShopItem>> getActive();
+
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id = :job_id order by i.name")
+    LiveData<List<ShopItem>> getForJob(String job_id);
+
+
     @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.item_id LIKE :id")
     ShopItem findByItemId(String id);
 
@@ -28,6 +35,12 @@ public interface ShopItemDao {
 
     @Query("SELECT COUNT(*) from shopitems")
     int countItems();
+
+    @Query("SELECT COUNT(*) from shopitems where job_id is null")
+    int countActive();
+
+    @Query("SELECT COUNT(*) from shopitems where job_id is null and status = :status")
+    int countActiveByStatus(int status);
 
     @Insert
     void insertAll(ShopItem... shopitems);

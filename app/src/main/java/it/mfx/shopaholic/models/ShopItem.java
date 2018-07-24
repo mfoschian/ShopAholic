@@ -9,6 +9,7 @@ import android.arch.persistence.room.RoomWarnings;
 import android.support.annotation.NonNull;
 
 
+
 @Entity(tableName = "shopitems")
 public class ShopItem {
 
@@ -19,6 +20,16 @@ public class ShopItem {
     public String item_id;
 
     public int qty = 0;
+
+    //From Version 10
+    public class Status {
+        public static final int PENDING = 0;
+        public static final int DONE = 0;
+    }
+
+    public int status = Status.PENDING;
+
+    public String job_id;
 
     //@Embedded(prefix = "item")
     @Embedded
