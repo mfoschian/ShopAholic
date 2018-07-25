@@ -24,7 +24,9 @@
             android:name=".activities.SearchItemActivity"
             android:label="@string/title_activity_search_item"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.EditItemActivity" />
+        <activity android:name=".activities.EditItemActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+        />
         <activity
             android:name=".activities.ShopRunActivity"
             android:label="@string/title_activity_shop_run"

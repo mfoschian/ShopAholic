@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -30,6 +31,11 @@ public class SearchItemActivity extends AppCompatActivity implements SearchItemF
         setContentView(R.layout.activity_search);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ActionBar bar = getSupportActionBar();
+        if( bar != null ) {
+            bar.setDisplayHomeAsUpEnabled(true);
+        }
 
         modelView = ViewModelProviders.of(this).get(ShopListViewModel.class);
 

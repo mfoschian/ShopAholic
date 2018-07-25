@@ -32,9 +32,12 @@ public class ShopRunListRecyclerViewAdapter extends RecyclerView.Adapter<ShopRun
         this.shopName = shopName;
     }
 
-    public void setItems(List<ShopItem> items) {
+    public void setItems(List<ShopItem> items, boolean show_done) {
         mValues.clear();
         for (ShopItem shopItem : items) {
+
+            if( shopItem.status == ShopItem.Status.DONE && show_done == false )
+                continue;
 
             if (shopItem.qty > 0 && shopName.equals(shopItem.item.shopName))
                 mValues.add(shopItem);
@@ -60,6 +63,13 @@ public class ShopRunListRecyclerViewAdapter extends RecyclerView.Adapter<ShopRun
         holder.nameView.setText(item.item.name);
         holder.descriptionView.setText(item.item.description);
 
+        if( item.status == ShopItem.Status.DONE ) {
+            holder.mView.setAlpha(0.5f);
+        }
+        else {
+            holder.mView.setAlpha(1f); // Opaque
+        }
+
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +82,7 @@ public class ShopRunListRecyclerViewAdapter extends RecyclerView.Adapter<ShopRun
 
             }
         });
+
     }
 
     @Override

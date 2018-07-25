@@ -24,7 +24,7 @@ public class ShopItem {
     //From Version 10
     public class Status {
         public static final int PENDING = 0;
-        public static final int DONE = 0;
+        public static final int DONE = 1;
     }
 
     public int status = Status.PENDING;

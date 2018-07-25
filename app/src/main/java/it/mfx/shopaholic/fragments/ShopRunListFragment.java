@@ -63,11 +63,11 @@ public class ShopRunListFragment extends Fragment implements ShopRunListRecycler
 
 
     private void subscribeUI() {
-        //TODO: filter by shopname !
         viewModel.getShopItems().observe(this, new Observer<List<ShopItem>>() {
                     @Override
                     public void onChanged(@Nullable List<ShopItem> shopItems) {
-                        adapter.setItems(shopItems);
+                        boolean showItemsDone = viewModel.isShowingItemsDone();
+                        adapter.setItems(shopItems, showItemsDone);
                     }
                 }
         );
@@ -79,8 +79,8 @@ public class ShopRunListFragment extends Fragment implements ShopRunListRecycler
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_shop_run, container, false);
 
-        TextView textView = rootView.findViewById(R.id.section_label);
-        textView.setText( mShopName );
+        //TextView textView = rootView.findViewById(R.id.section_label);
+        //textView.setText( mShopName );
 
         RecyclerView recyclerView = rootView.findViewById(R.id.shop_run_list);
         Context context = rootView.getContext();

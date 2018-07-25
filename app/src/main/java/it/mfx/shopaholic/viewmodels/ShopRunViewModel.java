@@ -20,6 +20,10 @@ public class ShopRunViewModel  extends AndroidViewModel {
         app = (ShopApplication)application;
     }
 
+    //==================================
+    // ShopItems
+    //==================================
+
     private MutableLiveData<List<ShopItem>> mShopItems = new MutableLiveData<>();
 
     public LiveData<List<ShopItem>> getShopItems() {
@@ -30,6 +34,28 @@ public class ShopRunViewModel  extends AndroidViewModel {
         mShopItems.postValue( items );
     }
 
+    public void loadShopItems() {
+        app.getShopItemsAsync(new ShopApplication.Callback<List<ShopItem>>() {
+            @Override
+            public void onSuccess(List<ShopItem> result) {
+                setShopItems(result);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void loadShopItemsSync() {
+        List<ShopItem> items = app.getShopItems();
+        setShopItems(items);
+    }
+
+    //==================================
+    // ShopNames
+    //==================================
     private MutableLiveData<List<String>> shopNames = new MutableLiveData<>();
 
     public LiveData<List<String>> getShopNames() { return shopNames; }
@@ -52,25 +78,66 @@ public class ShopRunViewModel  extends AndroidViewModel {
         });
     }
 
-    public void loadShopItems() {
-        app.getShopItemsAsync(new ShopApplication.Callback<List<ShopItem>>() {
-            @Override
-            public void onSuccess(List<ShopItem> result) {
-                setShopItems(result);
-            }
+    //==================================
+    // Done Visibility
+    //==================================
+    static final private boolean default_show_items_done = true;
+    private boolean showItemsDone = default_show_items_done;
 
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-            }
-        });
+    public void setShowItemsDone(boolean flag) {
+        this.showItemsDone = flag;
     }
 
-    public void loadShopItemsSync() {
-        List<ShopItem> items = app.getShopItems();
-        setShopItems(items);
+    public boolean isShowingItemsDone() {
+        return showItemsDone;
     }
 
+    private void setItemStatus(String shop_item_id, int status, ShopApplication.Callback<Boolean> cb ) {
+        List<ShopItem> items = mShopItems.getValue();
+        if( items == null ) {
+            cb.onSuccess(true);
+            return;
+        }
+        for( ShopItem item: items ) {
+            if( item.sid.equals(shop_item_id)) {
+                item.status = status;
+                app.saveShopItemAsync(item, cb);
+                break;
+            }
+        }
+    }
+
+    public void setItemDone( String shop_item_id, ShopApplication.Callback<Boolean> cb ) {
+        setItemStatus(shop_item_id, ShopItem.Status.DONE, cb);
+    }
+
+    public void setItemUnDone( String shop_item_id, ShopApplication.Callback<Boolean> cb ) {
+        setItemStatus(shop_item_id, ShopItem.Status.PENDING, cb);
+    }
+
+    public void revertItemStatus(String shop_item_id, ShopApplication.Callback<Boolean> cb ) {
+        List<ShopItem> items = mShopItems.getValue();
+        if( items == null ) {
+            cb.onSuccess(true);
+            return;
+        }
+        for( ShopItem item: items ) {
+            if( item.sid.equals(shop_item_id)) {
+                if( item.status == ShopItem.Status.DONE )
+                    item.status = ShopItem.Status.PENDING;
+                else
+                    item.status = ShopItem.Status.DONE;
+
+                app.saveShopItemAsync(item, cb);
+                break;
+            }
+        }
+    }
+
+
+    //==================================
+    // Save actions
+    //==================================
     public void saveChanges(ShopApplication.Callback<Integer> cb) {
         List<ShopItem> items = getShopItems().getValue();
         app.saveShopItemsAsync(items, cb);

@@ -7,9 +7,12 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -90,7 +93,7 @@ public class EditItemActivity extends AppCompatActivity {
 
     private void returnItem(final Item item) {
         Intent data = new Intent();
-        String result = item.id;
+        String result = item == null ? "" : item.id;
 
         data.setData(Uri.parse(result));
         setResult(RESULT_OK, data);
@@ -131,6 +134,14 @@ public class EditItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_item);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar bar = getSupportActionBar();
+        if( bar != null ) {
+            bar.setDisplayHomeAsUpEnabled(true);
+        }
+
         FloatingActionButton butSave = findViewById(R.id.but_item_save);
         butSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,6 +179,31 @@ public class EditItemActivity extends AppCompatActivity {
             viewModel.setNewItem(item);
         }
 
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == android.R.id.home) {
+            // This ID represents the Home or Up button. In the case of this
+            // activity, the Up button is shown. For
+            // more details, see the Navigation pattern on Android Design:
+            //
+            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
+            //
+
+            //navigateUpTo(new Intent(this, ComposeListActivity.class));
+            returnItem(null);
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     void retrieveDataFor(@NonNull Item item) {

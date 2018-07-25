@@ -25,13 +25,6 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:title="@string/app_name">
 
-            <ImageView
-                android:id="@+id/but_shop_run"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:srcCompat="@android:drawable/ic_media_play" />
-
 
         </android.support.v7.widget.Toolbar>
 
