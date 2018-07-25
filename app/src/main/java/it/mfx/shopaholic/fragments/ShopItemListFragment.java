@@ -20,26 +20,18 @@ import it.mfx.shopaholic.viewmodels.ShopListViewModel;
 
 import java.util.List;
 
-/**
- * A fragment representing a list of Items..
- */
-public class ShopItemListFragment extends Fragment implements ComposeShopItemRecyclerViewAdapter.ShopItemRowListener {
+public class ShopItemListFragment extends Fragment implements ShopItemListRecyclerViewAdapter.ShopItemRowListener {
 
     private static final String ARG_SHOP_NAME = "shopname";
     private String mShopName;
     private int mColumnCount = 1;
     //private OnListFragmentInteractionListener mListener;
     private ShopListViewModel modelView;
-    private ComposeShopItemRecyclerViewAdapter adapter;
+    private ShopItemListRecyclerViewAdapter adapter;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public ShopItemListFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static ShopItemListFragment newInstance(String shopName) {
         ShopItemListFragment fragment = new ShopItemListFragment();
@@ -86,7 +78,7 @@ public class ShopItemListFragment extends Fragment implements ComposeShopItemRec
             modelView = ViewModelProviders.of(this.getActivity()).get(ShopListViewModel.class);
             subscribeUI();
 
-            adapter = new ComposeShopItemRecyclerViewAdapter(this);
+            adapter = new ShopItemListRecyclerViewAdapter(this);
             recyclerView.setAdapter(adapter);
 
         }

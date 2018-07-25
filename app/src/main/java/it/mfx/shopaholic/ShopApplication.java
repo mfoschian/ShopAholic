@@ -189,7 +189,7 @@ public class ShopApplication extends Application {
     //==============================================
 
     public List<ShopItem> getShopItems() {
-        List<ShopItem> res = db().shopItemDao().getAllSync();
+        List<ShopItem> res = db().getActiveShopItems();
         return res;
     }
 
@@ -207,9 +207,6 @@ public class ShopApplication extends Application {
         });
     }
 
-    public LiveData<List<ShopItem>> getLiveShopItems() {
-        return db().getShopItemsLive();
-    }
 
     public void saveShopItems( List<ShopItem> shopItems ) {
         db().saveShopItems(shopItems);
@@ -267,4 +264,23 @@ public class ShopApplication extends Application {
         });
     }
 
+    public List<String> getActiveShopNames() {
+        return db().getActiveShopNames();
+    }
+
+    public void getActiveShopNamesAsync(final Callback<List<String>> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<String> names = getActiveShopNames();
+                    if( cb != null )
+                        cb.onSuccess(names);
+                } catch (Exception err) {
+                    if( cb != null )
+                        cb.onError(err);
+                }
+            }
+        });
+    }
 }

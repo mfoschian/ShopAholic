@@ -1,74 +1,64 @@
 package it.mfx.shopaholic.fragments;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
-
-import it.mfx.shopaholic.R;
-//import it.mfx.shopaholic.fragments.ShopItemListFragment.OnListFragmentInteractionListener;
-import it.mfx.shopaholic.models.ShopItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import it.mfx.shopaholic.R;
+import it.mfx.shopaholic.models.ShopItem;
 
-public class ComposeShopItemRecyclerViewAdapter extends RecyclerView.Adapter<ComposeShopItemRecyclerViewAdapter.ViewHolder> {
+public class ShopRunListRecyclerViewAdapter extends RecyclerView.Adapter<ShopRunListRecyclerViewAdapter.ViewHolder> {
 
     private final List<ShopItem> mValues;
+    private final String shopName;
     //private final OnListFragmentInteractionListener mListener;
 
     public interface ShopItemRowListener {
         void onItemSelected( ShopItem item );
     }
-    private ShopItemRowListener mListener = null;
+    private ShopRunListRecyclerViewAdapter.ShopItemRowListener mListener = null;
 
-    public ComposeShopItemRecyclerViewAdapter(ShopItemRowListener listener) {
-        mValues = new ArrayList<ShopItem>();
+    public ShopRunListRecyclerViewAdapter(@NonNull String shopName, ShopRunListRecyclerViewAdapter.ShopItemRowListener listener) {
+        mValues = new ArrayList<>();
         mListener = listener;
+        this.shopName = shopName;
     }
 
     public void setItems(List<ShopItem> items) {
         mValues.clear();
-        mValues.addAll(items);
+        for (ShopItem shopItem : items) {
+
+            if (shopItem.qty > 0 && shopName.equals(shopItem.item.shopName))
+                mValues.add(shopItem);
+        }
+
         notifyDataSetChanged();
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public ShopRunListRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_compose_shopitem, parent, false);
-        return new ViewHolder(view);
+                .inflate(R.layout.fragment_shop_run_item, parent, false);
+        return new ShopRunListRecyclerViewAdapter.ViewHolder(view);
     }
 
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ShopRunListRecyclerViewAdapter.ViewHolder holder, int position) {
         final ShopItem item = mValues.get(position);
         holder.mItem = item;
         holder.qtyView.setText(""+ item.qty);
         holder.nameView.setText(item.item.name);
         holder.descriptionView.setText(item.item.description);
-
-        holder.btnPlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                item.qty++;
-                holder.qtyView.setText(""+ item.qty);
-            }
-        });
-
-        holder.btnMinus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if( item.qty > 0 ) {
-                    item.qty--;
-                    holder.qtyView.setText(""+ item.qty);                }
-            }
-        });
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,8 +84,6 @@ public class ComposeShopItemRecyclerViewAdapter extends RecyclerView.Adapter<Com
         public final TextView qtyView;
         public final TextView nameView;
         public final TextView descriptionView;
-        public final ImageButton btnPlus;
-        public final ImageButton btnMinus;
         public ShopItem mItem;
 
         public ViewHolder(View view) {
@@ -104,8 +92,6 @@ public class ComposeShopItemRecyclerViewAdapter extends RecyclerView.Adapter<Com
             qtyView = view.findViewById(R.id.item_qty);
             nameView = view.findViewById(R.id.item_name);
             descriptionView = view.findViewById(R.id.item_description);
-            btnPlus = view.findViewById(R.id.buttonPlus);
-            btnMinus = view.findViewById(R.id.buttonMinus);
         }
 
         @Override
@@ -114,3 +100,5 @@ public class ComposeShopItemRecyclerViewAdapter extends RecyclerView.Adapter<Com
         }
     }
 }
+
+

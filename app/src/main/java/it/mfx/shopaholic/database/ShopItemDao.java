@@ -21,6 +21,9 @@ public interface ShopItemDao {
     LiveData<List<ShopItem>> getAll();
 
     @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.name")
+    List<ShopItem> getActiveSync();
+
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.name")
     LiveData<List<ShopItem>> getActive();
 
     @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id = :job_id order by i.name")
@@ -53,4 +56,7 @@ public interface ShopItemDao {
 
     @Update
     void update(List<ShopItem>  shopItems);
+
+    @Query("SELECT DISTINCT shopName FROM shopitems where job_id is null order by shopName")
+    List<String> getShopNamesSync();
 }

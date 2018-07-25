@@ -72,11 +72,16 @@ public abstract class AppDatabase extends RoomDatabase {
     public LiveData<List<ShopItem>> getShopItemsLive() { return shopItemDao().getActive(); }
 
     public List<ShopItem> getShopItems() { return shopItemDao().getAllSync(); }
+    public List<ShopItem> getActiveShopItems() { return shopItemDao().getActiveSync(); }
 
     public void saveShopItems(List<ShopItem> shopitems ) {
         shopItemDao().update(shopitems);
     }
     public void saveShopItem(ShopItem shopitem) {
         shopItemDao().update(shopitem);
+    }
+
+    public List<String> getActiveShopNames() {
+        return shopItemDao().getShopNamesSync();
     }
 }

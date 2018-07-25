@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.TintableImageSourceView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import java.util.List;
 
@@ -85,6 +87,30 @@ public class ComposeListActivity extends AppCompatActivity {
         //mItemList.setVisibility(View.VISIBLE);
     }
 
+    private void runShop() {
+        Context ctx = this;
+        Intent intent = new Intent(ctx, ShopRunActivity.class);
+        //intent.putExtra(DocumentDetailFragment.ARG_ITEM_ID, doc_id);
+        //startActivityForResult(intent,ShopApplication.IntentRequests.CHOOSE_ITEM_REQUEST);
+
+        final Intent fintent = intent;
+
+        // First save changes
+        modelView.saveChanges(new ShopApplication.Callback<Integer>() {
+            @Override
+            public void onSuccess(Integer result) {
+                // Then open select GUI for item
+                startActivity(fintent,null);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +137,13 @@ public class ComposeListActivity extends AppCompatActivity {
             }
         });
 
+        ImageView butPlay = findViewById(R.id.but_shop_run);
+        butPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                runShop();
+            }
+        });
         modelView = ViewModelProviders.of(this).get(ShopListViewModel.class);
         subscribeUI();
 
