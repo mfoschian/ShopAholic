@@ -14,10 +14,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import it.mfx.shopaholic.R;
 import it.mfx.shopaholic.ShopApplication;
+import it.mfx.shopaholic.customviews.TextInputAutoCompleteTextView;
 import it.mfx.shopaholic.models.Item;
 import it.mfx.shopaholic.viewmodels.ItemFormViewModel;
 
@@ -44,6 +49,8 @@ public class EditItemActivity extends AppCompatActivity {
     };
 
     private ItemFormViewModel viewModel;
+    private TextInputAutoCompleteTextView shopAutocomplete;
+    private ArrayAdapter<String> autoCompleteAdapter;
 
     protected ShopApplication app() {
         return (ShopApplication) this.getApplication();
@@ -127,6 +134,15 @@ public class EditItemActivity extends AppCompatActivity {
                 renderDataFor(item);
             }
         });
+
+        viewModel.getShopNames().observe(this, new Observer<List<String>>() {
+            @Override
+            public void onChanged(@Nullable List<String> strings) {
+                autoCompleteAdapter.clear();
+                autoCompleteAdapter.addAll(strings);
+                autoCompleteAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -149,6 +165,11 @@ public class EditItemActivity extends AppCompatActivity {
                 saveAndReturn();
             }
         });
+
+        shopAutocomplete = findViewById(R.id.txt_item_shop);
+        autoCompleteAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+        shopAutocomplete.setAdapter(autoCompleteAdapter);
 
         viewModel = ViewModelProviders.of(this).get(ItemFormViewModel.class);
         final ItemFormViewModel vm = viewModel;
@@ -179,6 +200,7 @@ public class EditItemActivity extends AppCompatActivity {
             viewModel.setNewItem(item);
         }
 
+        viewModel.loadShopNames();
     }
 
 
