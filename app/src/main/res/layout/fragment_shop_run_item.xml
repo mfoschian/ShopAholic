@@ -29,8 +29,10 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:textAppearance="?attr/textAppearanceListItem"
+        android:text="Nome_Item"
 
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/buttonMinus"
         app:layout_constraintStart_toEndOf="@+id/item_qty"
         app:layout_constraintTop_toTopOf="parent" />
@@ -42,6 +44,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:text="descrizione Item"
         app:layout_constraintEnd_toStartOf="@+id/buttonMinus"
         app:layout_constraintStart_toEndOf="@+id/item_qty"
         app:layout_constraintTop_toBottomOf="@id/item_name" />
@@ -56,5 +59,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imgCheckboxDone"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:adjustViewBounds="false"
+        android:background="@color/whiteSemiOpaque"
+        android:cropToPadding="false"
+        android:scaleType="fitStart"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_check_green_24dp"
+        tools:scaleType="fitStart" />
 
 </android.support.constraint.ConstraintLayout>

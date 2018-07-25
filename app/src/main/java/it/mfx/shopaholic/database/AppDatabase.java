@@ -32,7 +32,7 @@ public abstract class AppDatabase extends RoomDatabase {
         return db;
     }
 
-    private static String newId() {
+    public static String newId() {
         return UUID.randomUUID().toString();
     }
 

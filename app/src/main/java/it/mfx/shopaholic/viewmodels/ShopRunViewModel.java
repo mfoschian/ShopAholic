@@ -81,7 +81,7 @@ public class ShopRunViewModel  extends AndroidViewModel {
     //==================================
     // Done Visibility
     //==================================
-    static final private boolean default_show_items_done = true;
+    static final private boolean default_show_items_done = false;
     private boolean showItemsDone = default_show_items_done;
 
     public void setShowItemsDone(boolean flag) {
@@ -143,6 +143,7 @@ public class ShopRunViewModel  extends AndroidViewModel {
         app.saveShopItemsAsync(items, cb);
     }
 
+    /*
     @Override
     protected void onCleared() {
         super.onCleared();
@@ -153,4 +154,5 @@ public class ShopRunViewModel  extends AndroidViewModel {
 
         app.saveShopItemsAsync(sitems, null);
     }
+    */
 }

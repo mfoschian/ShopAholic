@@ -3,6 +3,7 @@ package it.mfx.shopaholic.activities;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
@@ -31,6 +32,8 @@ public class ShopRunActivity extends AppCompatActivity implements ShopRunListFra
     private ShopRunViewModel viewModel;
 
 
+    static final public String RESULT_STOP = "STOP";
+    static final public String RESULT_PAUSE = "PAUSE";
 
     private void subscribeUI() {
         viewModel.getShopNames().observe(this, new Observer<List<String>>() {
@@ -139,13 +142,25 @@ public class ShopRunActivity extends AppCompatActivity implements ShopRunListFra
             return true;
         }
         else if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
-            navigateUpTo(new Intent(this, ComposeListActivity.class));
+            //navigateUpTo(new Intent(this, ComposeListActivity.class));
+            Intent data = new Intent();
+            String result = RESULT_PAUSE;
+
+            data.setData(Uri.parse(result));
+            setResult(RESULT_OK, data);
+
+            finish();
+
+            return true;
+        }
+        else if (id == R.id.menu_shop_stop) {
+            Intent data = new Intent();
+            String result = RESULT_STOP;
+
+            data.setData(Uri.parse(result));
+            setResult(RESULT_OK, data);
+
+            finish();
 
             return true;
         }

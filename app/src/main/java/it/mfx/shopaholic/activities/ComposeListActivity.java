@@ -29,23 +29,13 @@ import it.mfx.shopaholic.fragments.ShopItemListFragment;
 import it.mfx.shopaholic.models.ShopItem;
 import it.mfx.shopaholic.viewmodels.ShopListViewModel;
 
+
 public class ComposeListActivity extends AppCompatActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private SearchItemFragment searchItemFragment = null;
     private View mItemList = null;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
     private ShopListViewModel modelView;
 
@@ -82,16 +72,12 @@ public class ComposeListActivity extends AppCompatActivity {
 
             }
         });
-
-
-        //mItemList.setVisibility(View.VISIBLE);
     }
 
     private void runShop() {
         Context ctx = this;
         Intent intent = new Intent(ctx, ShopRunActivity.class);
         //intent.putExtra(DocumentDetailFragment.ARG_ITEM_ID, doc_id);
-        //startActivityForResult(intent,ShopApplication.IntentRequests.CHOOSE_ITEM_REQUEST);
 
         final Intent fintent = intent;
 
@@ -100,7 +86,8 @@ public class ComposeListActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Integer result) {
                 // Then open select GUI for item
-                startActivity(fintent,null);
+                //startActivity(fintent,null);
+                startActivityForResult(fintent, ShopApplication.IntentRequests.SHOP_RUN_REQUEST);
             }
 
             @Override
@@ -144,7 +131,7 @@ public class ComposeListActivity extends AppCompatActivity {
     }
 
     private void subscribeUI() {
-
+/*
         modelView.getShopItems().observe(this, new Observer<List<ShopItem>>() {
                     @Override
                     public void onChanged(@Nullable List<ShopItem> shopItems) {
@@ -153,7 +140,7 @@ public class ComposeListActivity extends AppCompatActivity {
                     }
                 }
         );
-
+*/
     }
 
     @Override
@@ -217,6 +204,27 @@ public class ComposeListActivity extends AppCompatActivity {
                     }
                 });
             }
+        }
+        else if( requestCode == ShopApplication.IntentRequests.SHOP_RUN_REQUEST ) {
+            if( resultCode == RESULT_OK ) {
+                String action = data.getData().toString();
+                if( ShopRunActivity.RESULT_STOP.equals(action)) {
+                    //TODO: storicize shopitems
+                    modelView.archiveDoneShopeItems(new ShopApplication.CallbackSimple() {
+                        @Override
+                        public void onSuccess() {
+                            refreshData();
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                        }
+                    });
+                    return;
+                }
+            }
+            refreshData();
         }
     }
 

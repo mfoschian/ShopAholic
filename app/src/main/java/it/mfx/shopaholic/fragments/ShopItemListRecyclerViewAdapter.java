@@ -1,10 +1,12 @@
 package it.mfx.shopaholic.fragments;
 
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import it.mfx.shopaholic.R;
@@ -51,36 +53,51 @@ public class ShopItemListRecyclerViewAdapter extends RecyclerView.Adapter<ShopIt
         holder.qtyView.setText(""+ item.qty);
         holder.nameView.setText(item.item.name);
         holder.descriptionView.setText(item.item.description);
+        if( item.status == ShopItem.Status.DONE) {
+            if( holder.btnPlus.hasOnClickListeners() )
+                holder.btnPlus.setOnClickListener(null);
 
-        holder.btnPlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                item.qty++;
-                holder.qtyView.setText(""+ item.qty);
-            }
-        });
+            if( holder.btnMinus.hasOnClickListeners() )
+                holder.btnMinus.setOnClickListener(null);
 
-        holder.btnMinus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if( item.qty > 0 ) {
-                    item.qty--;
-                    holder.qtyView.setText(""+ item.qty);                }
-            }
-        });
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onItemSelected(holder.mItem);
+            //holder.mView.setAlpha(0.5f);
+            holder.imgCheck.setVisibility(View.VISIBLE);
+            //holder.imgCheck.setAlpha(1f);
+        }
+        else {
+            //holder.mView.setAlpha(1f);
+            holder.imgCheck.setVisibility(View.INVISIBLE);
+            holder.btnPlus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    item.qty++;
+                    holder.qtyView.setText("" + item.qty);
                 }
+            });
 
-            }
-        });
+            holder.btnMinus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (item.qty > 0) {
+                        item.qty--;
+                        holder.qtyView.setText("" + item.qty);
+                    }
+                }
+            });
+
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (null != mListener) {
+                        // Notify the active callbacks interface (the activity, if the
+                        // fragment is attached to one) that an item has been selected.
+                        mListener.onItemSelected(holder.mItem);
+                    }
+
+                }
+            });
+        }
     }
 
     @Override
@@ -95,6 +112,7 @@ public class ShopItemListRecyclerViewAdapter extends RecyclerView.Adapter<ShopIt
         public final TextView descriptionView;
         public final ImageButton btnPlus;
         public final ImageButton btnMinus;
+        public final ImageView imgCheck;
         public ShopItem mItem;
 
         public ViewHolder(View view) {
@@ -105,6 +123,7 @@ public class ShopItemListRecyclerViewAdapter extends RecyclerView.Adapter<ShopIt
             descriptionView = view.findViewById(R.id.item_description);
             btnPlus = view.findViewById(R.id.buttonPlus);
             btnMinus = view.findViewById(R.id.buttonMinus);
+            imgCheck = view.findViewById(R.id.imgCheckboxDone);
         }
 
         @Override

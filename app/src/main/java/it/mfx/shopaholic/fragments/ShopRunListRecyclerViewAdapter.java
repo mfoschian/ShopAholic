@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -64,10 +65,10 @@ public class ShopRunListRecyclerViewAdapter extends RecyclerView.Adapter<ShopRun
         holder.descriptionView.setText(item.item.description);
 
         if( item.status == ShopItem.Status.DONE ) {
-            holder.mView.setAlpha(0.5f);
+            holder.imgCheck.setVisibility(View.VISIBLE);
         }
         else {
-            holder.mView.setAlpha(1f); // Opaque
+            holder.imgCheck.setVisibility(View.INVISIBLE);
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +96,8 @@ public class ShopRunListRecyclerViewAdapter extends RecyclerView.Adapter<ShopRun
         public final TextView qtyView;
         public final TextView nameView;
         public final TextView descriptionView;
+        public final ImageView imgCheck;
+
         public ShopItem mItem;
 
         public ViewHolder(View view) {
@@ -103,6 +106,7 @@ public class ShopRunListRecyclerViewAdapter extends RecyclerView.Adapter<ShopRun
             qtyView = view.findViewById(R.id.item_qty);
             nameView = view.findViewById(R.id.item_name);
             descriptionView = view.findViewById(R.id.item_description);
+            imgCheck = view.findViewById(R.id.imgCheckboxDone);
         }
 
         @Override

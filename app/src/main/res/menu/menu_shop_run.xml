@@ -3,11 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="it.mfx.shopaholic.activities.ShopRunActivity">
     <item
+        android:id="@+id/menu_shop_stop"
+        android:icon="@drawable/ic_stop_black_24dp"
+        android:title="Fine Spesa"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/menu_show_items_done"
         android:checkable="true"
         android:enabled="true"
         android:icon="@android:drawable/ic_menu_view"
         android:title="Show Item Done"
         android:visible="true"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 </menu>

@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import it.mfx.shopaholic.ShopApplication;
+import it.mfx.shopaholic.database.AppDatabase;
 import it.mfx.shopaholic.models.Item;
 import it.mfx.shopaholic.models.ShopItem;
 
@@ -119,6 +120,36 @@ public class ShopListViewModel extends AndroidViewModel {
     public void addShopItem(ShopItem shopItem, ShopApplication.Callback<Boolean> cb ) {
         app.addShopItemAsync(shopItem, cb);
     }
+
+
+    public void archiveDoneShopeItems(@NonNull final ShopApplication.CallbackSimple cb) {
+        List<ShopItem> items = mShopItems.getValue();
+        if( items == null ) {
+            cb.onSuccess();
+            return;
+        }
+
+        // TODO: create a new Job...
+        String job_id = AppDatabase.newId();
+        for( ShopItem shopItem : items ) {
+            if( shopItem.status == ShopItem.Status.DONE && shopItem.qty > 0 && shopItem.job_id == null ) {
+                shopItem.job_id = job_id;
+            }
+        }
+
+        saveChanges(new ShopApplication.Callback<Integer>() {
+            @Override
+            public void onSuccess(Integer result) {
+                cb.onSuccess();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                cb.onError(e);
+            }
+        });
+    }
+
 
     public void saveChanges(ShopApplication.Callback<Integer> cb) {
         List<ShopItem> items = getShopItems().getValue();
