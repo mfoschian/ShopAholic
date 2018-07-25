@@ -169,6 +169,7 @@ public class EditItemActivity extends AppCompatActivity {
         shopAutocomplete = findViewById(R.id.txt_item_shop);
         autoCompleteAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+        shopAutocomplete.setThreshold(1);
         shopAutocomplete.setAdapter(autoCompleteAdapter);
 
         viewModel = ViewModelProviders.of(this).get(ItemFormViewModel.class);
