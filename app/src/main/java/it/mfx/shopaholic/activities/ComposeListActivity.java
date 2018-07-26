@@ -165,6 +165,32 @@ public class ComposeListActivity extends AppCompatActivity {
         modelView = ViewModelProviders.of(this).get(ShopListViewModel.class);
         subscribeUI();
 
+        //Check shared data
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if(Intent.ACTION_SEND.equals(action)) {
+            if( "application/json".equals(type)) {
+                // Load data shared from outside
+                String json = intent.getStringExtra(Intent.EXTRA_TEXT);
+                if( json != null ) {
+                    ShareUtils.putSharableData(json, app(), new ShopApplication.CallbackSimple() {
+                        @Override
+                        public void onSuccess() {
+                            refreshData();
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                        }
+                    });
+                    return;
+                }
+            }
+        }
+
         refreshData();
     }
 

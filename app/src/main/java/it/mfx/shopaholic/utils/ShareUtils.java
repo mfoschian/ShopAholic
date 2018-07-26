@@ -43,7 +43,7 @@ public class ShareUtils {
             obj.item_id = arg.getString("item_id");
             obj.qty = arg.getInt("qty");
             obj.status = arg.getInt("status");
-            obj.job_id = arg.getString("job_id");
+            obj.job_id = arg.optString("job_id",null);
         }
         catch( JSONException je ) {
             je.printStackTrace();
@@ -61,9 +61,9 @@ public class ShareUtils {
             obj.id = arg.getString("id");
 
             obj.name = arg.getString("name");
-            obj.description = arg.getString("description");
-            obj.shopName = arg.getString("shopName");
-            obj.zoneName = arg.getString("zoneName");
+            obj.description = arg.optString("description", null);
+            obj.shopName = arg.optString("shopName", null);
+            obj.zoneName = arg.optString("zoneName", null);
         }
         catch( JSONException je ) {
             je.printStackTrace();
