@@ -43,6 +43,6 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/colorAccentGreen"
-        app:srcCompat="@drawable/ic_add_shopping_cart_black_24dp" />
+        app:srcCompat="@drawable/ic_add_new_shopitem" />
 
 </android.support.design.widget.CoordinatorLayout>

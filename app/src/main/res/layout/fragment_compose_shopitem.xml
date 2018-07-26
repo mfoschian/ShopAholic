@@ -28,7 +28,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/item_qty"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_add_circle_black_24dp" />
+        app:srcCompat="@drawable/ic_item_qty_plus" />
 
 
     <TextView
@@ -63,7 +63,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_remove_circle_black_24dp" />
+        app:srcCompat="@drawable/ic_item_qty_minus" />
 
     <ImageView
         android:id="@+id/imgCheckboxDone"

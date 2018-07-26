@@ -4,7 +4,7 @@
     tools:context="it.mfx.shopaholic.activities.ShopRunActivity">
     <item
         android:id="@+id/menu_shop_stop"
-        android:icon="@drawable/ic_stop_black_24dp"
+        android:icon="@drawable/ic_stop_shop"
         android:title="Fine Spesa"
         app:showAsAction="always" />
     <item
