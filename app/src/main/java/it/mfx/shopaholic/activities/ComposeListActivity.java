@@ -27,6 +27,7 @@ import it.mfx.shopaholic.ShopApplication;
 import it.mfx.shopaholic.fragments.SearchItemFragment;
 import it.mfx.shopaholic.fragments.ShopItemListFragment;
 import it.mfx.shopaholic.models.ShopItem;
+import it.mfx.shopaholic.utils.ShareUtils;
 import it.mfx.shopaholic.viewmodels.ShopListViewModel;
 
 
@@ -98,6 +99,43 @@ public class ComposeListActivity extends AppCompatActivity {
 
     }
 
+    private void shareShopList() {
+        final Context ctx = this;
+        final String title = getString(R.string.share_list);
+
+        // First save changes
+        ShareUtils.getSharableData(app(), new ShopApplication.Callback<String>() {
+                    @Override
+                    public void onSuccess(String json) {
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.setType("application/json");
+                        intent.putExtra(Intent.EXTRA_TEXT, json);
+                        startActivity(Intent.createChooser(intent, title));
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
+    }
+
+    private void saveAndShareShopList() {
+        // First save changes
+        modelView.saveChanges(new ShopApplication.Callback<Integer>() {
+            @Override
+            public void onSuccess(Integer result) {
+                shareShopList();
+                //startActivity(fintent,null);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,6 +194,9 @@ public class ComposeListActivity extends AppCompatActivity {
 
         if( id == R.id.menu_start_shop_run ) {
             runShop();
+        }
+        else if( id == R.id.menu_share_list ) {
+            saveAndShareShopList();
         }
 
         return super.onOptionsItemSelected(item);

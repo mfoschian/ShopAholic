@@ -9,6 +9,7 @@ import java.util.List;
 
 import it.mfx.shopaholic.database.AppDatabase;
 import it.mfx.shopaholic.models.Item;
+import it.mfx.shopaholic.models.Shop;
 import it.mfx.shopaholic.models.ShopItem;
 
 public class ShopApplication extends Application {
@@ -283,5 +284,39 @@ public class ShopApplication extends Application {
                 }
             }
         });
+    }
+
+    //==============================================
+    //  Bulk for shared shop list
+    //==============================================
+    public void saveBulk(final List<Item> items, final List<ShopItem> shopItems) {
+        if( items != null ) {
+            for (Item item : items) {
+                saveItem(item);
+            }
+        }
+
+        if( shopItems != null ) {
+            for (ShopItem shopItem : shopItems) {
+                saveShopItem(shopItem);
+            }
+        }
+    }
+
+    public void saveBulkAsync(final List<Item> items, final List<ShopItem> shopItems, final CallbackSimple cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    saveBulk(items, shopItems);
+                    if( cb != null )
+                        cb.onSuccess();
+                } catch (Exception err) {
+                    if( cb != null )
+                        cb.onError(err);
+                }
+            }
+        });
+
     }
 }
