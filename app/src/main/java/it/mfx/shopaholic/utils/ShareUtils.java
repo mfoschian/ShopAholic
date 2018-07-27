@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -202,16 +203,23 @@ public class ShareUtils {
 
     public static File saveDataToSharableFile(String data, Context ctx) {
 
-        String filename = "data.shopaholic";
+        String filename = "data_shopaholic.txt";
         File folder = ctx.getFilesDir(); // + File.separator + "shared";
         File file = null;
 
         FileOutputStream outputStream;
 
         try {
+            boolean ok = folder.mkdirs();
+            /*
+            if( !ok ) {
+                Log.e("SHARESHOPDATA","Cannot make folder "+folder.toString());
+                return null;
+            }
+            */
             //file = new File(ctx.getCacheDir(), filename);
             file = new File( folder , filename);
-            boolean ok = file.mkdirs();
+            file.delete();
 
             outputStream = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
             outputStream.write(data.getBytes());
@@ -252,9 +260,9 @@ public class ShareUtils {
         Intent intent = new Intent(Intent.ACTION_SEND);
 
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        //intent.setType(mimeType);
-        //intent.putExtra(Intent.EXTRA_STREAM, fileUri);
-        intent.setDataAndType(fileUri, mimeType);
+        intent.setType(mimeType);
+        intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+        //intent.setDataAndType(fileUri, mimeType);
         /**/
 
         /*
