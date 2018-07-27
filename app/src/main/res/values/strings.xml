@@ -4,4 +4,5 @@
     <string name="title_activity_search_item">SearchItemActivity</string>
     <string name="title_activity_shop_run">ShopRunActivity</string>
     <string name="share_list">Condividi lista</string>
+    <string name="share_mime_type">text/plain</string>
 </resources>

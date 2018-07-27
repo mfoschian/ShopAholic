@@ -4,6 +4,8 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.TintableImageSourceView;
@@ -20,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.io.File;
 import java.util.List;
 
 import it.mfx.shopaholic.R;
@@ -99,18 +102,19 @@ public class ComposeListActivity extends AppCompatActivity {
 
     }
 
+
     private void shareShopList() {
-        final Context ctx = this;
+        final Context ctx = this.getApplicationContext();
         final String title = getString(R.string.share_list);
+        final String mimeType = getString(R.string.share_mime_type);
 
         // First save changes
         ShareUtils.getSharableData(app(), new ShopApplication.Callback<String>() {
                     @Override
                     public void onSuccess(String json) {
-                        Intent intent = new Intent(Intent.ACTION_SEND);
-                        intent.setType("application/json");
-                        intent.putExtra(Intent.EXTRA_TEXT, json);
-                        startActivity(Intent.createChooser(intent, title));
+                        File jsonFile = ShareUtils.saveDataToSharableFile(json,ctx);
+                        if( jsonFile != null )
+                            ShareUtils.shareFile(jsonFile, mimeType, ComposeListActivity.this);
                     }
 
                     @Override
@@ -169,9 +173,11 @@ public class ComposeListActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
+        final String mimeType = getString(R.string.share_mime_type);
 
-        if(Intent.ACTION_SEND.equals(action)) {
-            if( "application/json".equals(type)) {
+        if(Intent.ACTION_SEND.equals(action)
+                || Intent.ACTION_VIEW.equals(action)) {
+            if( mimeType.equals(type)) {
                 // Load data shared from outside
                 String json = intent.getStringExtra(Intent.EXTRA_TEXT);
                 if( json != null ) {

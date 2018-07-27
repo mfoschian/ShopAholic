@@ -1,11 +1,20 @@
 package it.mfx.shopaholic.utils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ShareCompat;
+import android.support.v4.content.FileProvider;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +24,9 @@ import it.mfx.shopaholic.models.Item;
 import it.mfx.shopaholic.models.ShopItem;
 
 public class ShareUtils {
+
+    //static public final String mimeType = "application/x-shopaholic-data";
+
 
     private static JSONObject shopItem2json(ShopItem arg) {
         JSONObject obj = new JSONObject();
@@ -187,4 +199,73 @@ public class ShareUtils {
         }
 
     }
+
+    public static File saveDataToSharableFile(String data, Context ctx) {
+
+        String filename = "data.shopaholic";
+        File folder = ctx.getFilesDir(); // + File.separator + "shared";
+        File file = null;
+
+        FileOutputStream outputStream;
+
+        try {
+            //file = new File(ctx.getCacheDir(), filename);
+            file = new File( folder , filename);
+            boolean ok = file.mkdirs();
+
+            outputStream = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(data.getBytes());
+            outputStream.flush();
+            outputStream.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            file = null;
+        }
+
+        return file;
+    }
+
+    public static void shareFile(File file, String mimeType, Activity activity) {
+
+        if (file == null || !file.exists())
+            return;
+
+        Context ctx = activity.getApplicationContext();
+
+        //String filePath = file.getAbsolutePath();
+        //Uri fileUri = Uri.parse("file://" + filePath);
+        //Uri fileUri = Uri.fromFile(file);
+        Uri fileUri = FileProvider.getUriForFile(ctx,"it.mfx.shopaholic.fileprovider",file);
+
+        /*
+        Intent intent = ShareCompat.IntentBuilder.from(activity)
+                .setStream(fileUri) // uri from FileProvider
+                .setType(mimeType)
+                .getIntent()
+                .setAction(Intent.ACTION_SEND) //Change if needed
+                .setDataAndType(fileUri, mimeType)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        */
+
+        /**/
+        Intent intent = new Intent(Intent.ACTION_SEND);
+
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        //intent.setType(mimeType);
+        //intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+        intent.setDataAndType(fileUri, mimeType);
+        /**/
+
+        /*
+        PackageManager pm = activity.getPackageManager();
+        if (intent.resolveActivity(pm) != null) {
+            activity.startActivity(intent);
+        }
+        */
+
+        activity.startActivity(Intent.createChooser(intent, "ShopList Data"));
+    }
+
+
 }
