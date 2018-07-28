@@ -2,20 +2,24 @@ package it.mfx.shopaholic.activities;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,23 +35,6 @@ public class EditItemActivity extends AppCompatActivity {
     public final static String SUGGESTED_NAME_ARG = "suggested_name";
     public final static String ITEM_ID_ARG = "item_id";
 
-    private interface SaveListener {
-        void onSaved(final Item item);
-        void onError(String err);
-    }
-
-    private SaveListener defaultListener = new SaveListener() {
-        @Override
-        public void onSaved(final Item item) {
-            showMsg("Salvato");
-        }
-
-        @Override
-        public void onError(String err) {
-
-        }
-    };
-
     private ItemFormViewModel viewModel;
     private TextInputAutoCompleteTextView shopAutocomplete;
     private ArrayAdapter<String> autoCompleteAdapter;
@@ -57,11 +44,7 @@ public class EditItemActivity extends AppCompatActivity {
     }
 
 
-    private void save() {
-        save(defaultListener);
-    }
-
-    private void save(@NonNull final SaveListener listener) {
+    private void save(@NonNull final ShopApplication.Callback<Item> listener) {
 
         Item item = viewModel.getItem().getValue();
 
@@ -74,12 +57,12 @@ public class EditItemActivity extends AppCompatActivity {
             app().addItemAsync(item, new ShopApplication.Callback<Boolean>() {
                 @Override
                 public void onSuccess(Boolean result) {
-                    listener.onSaved(fitem);
+                    listener.onSuccess(fitem);
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    listener.onError(e.getMessage());
+                    listener.onError(e);
                 }
             });
         }
@@ -87,12 +70,12 @@ public class EditItemActivity extends AppCompatActivity {
             app().saveItemAsync(item, new ShopApplication.Callback<Boolean>() {
                 @Override
                 public void onSuccess(Boolean result) {
-                    listener.onSaved(fitem);
+                    listener.onSuccess(fitem);
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    listener.onError(e.getMessage());
+                    listener.onError(e);
                 }
             });
         }
@@ -109,15 +92,31 @@ public class EditItemActivity extends AppCompatActivity {
     }
 
     private void saveAndReturn() {
-        save(new SaveListener() {
+        save(new ShopApplication.Callback<Item>() {
             @Override
-            public void onSaved(final Item item) {
+            public void onSuccess(final Item item) {
                 returnItem(item);
             }
 
             @Override
-            public void onError(String err) {
+            public void onError(Exception e) {
 
+            }
+        });
+    }
+
+    void deleteItemAndReturn() {
+        viewModel.deleteItemAsync(new ShopApplication.Callback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean ok) {
+                if( ok == true )
+                    returnItem(null);
+                else
+                    showMsg(EditItemActivity.this.getString(R.string.delete_item_error));
+            }
+
+            @Override
+            public void onError(Exception e) {
             }
         });
     }
@@ -125,12 +124,16 @@ public class EditItemActivity extends AppCompatActivity {
     private void showMsg(String msg) {
         //Toast
         Log.i("ITEMEDT", msg);
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
     private void subscribeUI() {
         viewModel.getItem().observe(this, new Observer<Item>() {
             @Override
             public void onChanged(@Nullable Item item) {
+                if( item == null )
+                    return;
+
                 renderDataFor(item);
             }
         });
@@ -158,6 +161,7 @@ public class EditItemActivity extends AppCompatActivity {
             bar.setDisplayHomeAsUpEnabled(true);
         }
 
+        /*
         FloatingActionButton butSave = findViewById(R.id.but_item_save);
         butSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,6 +169,19 @@ public class EditItemActivity extends AppCompatActivity {
                 saveAndReturn();
             }
         });
+
+        <!--
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/but_item_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fab_margin"
+                app:backgroundTint="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@android:drawable/ic_menu_save" />
+        -->
+        */
 
         shopAutocomplete = findViewById(R.id.txt_item_shop);
         autoCompleteAdapter = new ArrayAdapter<String>(this,
@@ -204,6 +221,13 @@ public class EditItemActivity extends AppCompatActivity {
         viewModel.loadShopNames();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_edit_item, menu);
+        return true;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -225,6 +249,22 @@ public class EditItemActivity extends AppCompatActivity {
             returnItem(null);
 
             return true;
+        }
+        else if( id == R.id.item_menu_save )
+            saveAndReturn();
+
+        else if( id == R.id.item_menu_delete ) {
+            // Delete item, but first ask confirm
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.confirm_item_del_titile))
+                    .setMessage(getString(R.string.confirm_item_del_message))
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            deleteItemAndReturn();
+                        }})
+                    .setNegativeButton(android.R.string.no, null).show();
         }
         return super.onOptionsItemSelected(item);
     }

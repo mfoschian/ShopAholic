@@ -111,16 +111,6 @@
 
 
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/but_item_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_save" />
-
 
 
 </android.support.constraint.ConstraintLayout>

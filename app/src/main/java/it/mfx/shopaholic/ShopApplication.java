@@ -290,6 +290,16 @@ public class ShopApplication extends Application {
         });
     }
 
+
+    public void deleteItem(Item item) {
+        db().deleteItem(item);
+    }
+
+    public boolean isItemDeletable(String item_id) {
+        boolean ok = ! db().hasShopItem(item_id);
+        return ok;
+    }
+
     //==============================================
     //  Bulk for shared shop list
     //==============================================

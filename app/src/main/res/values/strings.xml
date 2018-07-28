@@ -5,4 +5,9 @@
     <string name="title_activity_shop_run">ShopRunActivity</string>
     <string name="share_list">Condividi lista</string>
     <string name="share_mime_type">text/plain</string>
+    <string name="save_item_label">Salva</string>
+    <string name="delete_item_label">Cancella Elemento</string>
+    <string name="confirm_item_del_titile">Attenzione</string>
+    <string name="confirm_item_del_message">Vuoi cancellare questo elemento?</string>
+    <string name="delete_item_error">Mi spiace, non posso cancellare questo elemento. Forse lo hai già usato in qualche spesa.</string>
 </resources>

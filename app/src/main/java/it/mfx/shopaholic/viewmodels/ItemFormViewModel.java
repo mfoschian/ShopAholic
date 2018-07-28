@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import java.util.List;
@@ -38,8 +39,47 @@ public class ItemFormViewModel extends AndroidViewModel {
         mItem.postValue(item);
     }
 
+    public void setItemDeleted() {
+        isNewItem = false;
+        mItem.postValue(null);
+    }
+
     public boolean isNewItem() {
         return isNewItem;
+    }
+
+    public boolean deleteItem() {
+        Item item = mItem.getValue();
+        if( item == null ) {
+            return true;
+        }
+
+        boolean can_delete = app.isItemDeletable(item.id);
+        if( !can_delete )
+            return false;
+
+        app.deleteItem(item);
+        mItem.setValue(null);
+
+        return true;
+    }
+
+
+    public void deleteItemAsync(@NonNull final ShopApplication.Callback<Boolean> cb ) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if( deleteItem() )
+                        cb.onSuccess(true);
+                    else
+                        cb.onSuccess(false);
+                }
+                catch (Exception err) {
+                    cb.onError(err);
+                }
+            }
+        });
     }
 
 

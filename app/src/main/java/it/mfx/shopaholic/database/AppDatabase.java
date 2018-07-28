@@ -57,6 +57,18 @@ public abstract class AppDatabase extends RoomDatabase {
         return itemDao().findById(item_id);
     }
 
+    public boolean hasShopItem(String item_id) {
+        int count  = shopItemDao().countForItem(item_id);
+        return count > 0;
+    }
+
+    public void deleteItem(Item item) {
+        if( item == null )
+            return;
+
+        itemDao().delete(item);
+    }
+
 
 
     public ShopItem addShopItem( ShopItem item ) {
@@ -82,4 +94,5 @@ public abstract class AppDatabase extends RoomDatabase {
     public List<String> getActiveShopNames() {
         return shopItemDao().getShopNamesSync();
     }
+
 }

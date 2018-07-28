@@ -30,6 +30,9 @@ public interface ShopItemDao {
     @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id = :job_id order by i.name")
     LiveData<List<ShopItem>> getForJob(String job_id);
 
+    @Query("SELECT COUNT(*) FROM shopitems where item_id = :item_id")
+    int countForItem(String item_id);
+
 
     @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.item_id LIKE :id")
     ShopItem findByItemId(String id);
