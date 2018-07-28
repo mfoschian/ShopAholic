@@ -112,9 +112,12 @@ public class ComposeListActivity extends AppCompatActivity {
         ShareUtils.getSharableData(app(), new ShopApplication.Callback<String>() {
                     @Override
                     public void onSuccess(String json) {
+                        /*
                         File jsonFile = ShareUtils.saveDataToSharableFile(json,ctx);
                         if( jsonFile != null )
                             ShareUtils.shareFile(jsonFile, mimeType, ComposeListActivity.this);
+                        */
+                        ShareUtils.shareTextData(json, mimeType, ComposeListActivity.this);
                     }
 
                     @Override
@@ -173,13 +176,46 @@ public class ComposeListActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
-        final String mimeType = getString(R.string.share_mime_type);
+        //final String mimeType = getString(R.string.share_mime_type);
+        final String[] acceptedTypes = new String[] {
+                getString(R.string.share_mime_type),
+                "text/html",
+                "application/json"
+        };
 
         if(Intent.ACTION_SEND.equals(action)
                 || Intent.ACTION_VIEW.equals(action)) {
-            if( mimeType.equals(type)) {
+
+            boolean type_accepted = false;
+            for( String acceptedType: acceptedTypes ) {
+                if( acceptedType.equals(type)) {
+                    type_accepted = true;
+                    break;
+                }
+            }
+            if( type_accepted ) {
                 // Load data shared from outside
                 String json = intent.getStringExtra(Intent.EXTRA_TEXT);
+                if( json == null ) {
+                    // maybe a file was passed
+                    Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                    if( uri == null )
+                        uri = intent.getData();
+
+                    if( uri != null ) {
+                        //String scheme = uri.getScheme();
+                        //String path = uri.getEncodedPath();
+                        //json = ShareUtils.getDataFromSharedFile(path, this);
+                        json = ShareUtils.getDataFromSharedFile(uri, this);
+
+                        /*
+                        String json2 = ShareUtils.getDataFromHtmlBody(json);
+                        if( json2 != null )
+                            json = json2;
+                        */
+                    }
+                }
+
                 if( json != null ) {
                     ShareUtils.putSharableData(json, app(), new ShopApplication.CallbackSimple() {
                         @Override

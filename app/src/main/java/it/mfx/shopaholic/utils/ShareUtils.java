@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
@@ -16,9 +17,12 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import it.mfx.shopaholic.ShopApplication;
 import it.mfx.shopaholic.models.Item;
@@ -207,8 +211,6 @@ public class ShareUtils {
         File folder = ctx.getFilesDir(); // + File.separator + "shared";
         File file = null;
 
-        FileOutputStream outputStream;
-
         try {
             boolean ok = folder.mkdirs();
             /*
@@ -219,12 +221,10 @@ public class ShareUtils {
             */
             //file = new File(ctx.getCacheDir(), filename);
             file = new File( folder , filename);
-            file.delete();
+            if( file.exists() )
+                file.delete();
 
-            outputStream = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
-            outputStream.write(data.getBytes());
-            outputStream.flush();
-            outputStream.close();
+            FileUtils.writeStringToFile(file.getAbsolutePath(), data, ctx);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -232,6 +232,34 @@ public class ShareUtils {
         }
 
         return file;
+    }
+
+
+
+    public static String getDataFromSharedFile(String filePath, Context ctx) {
+        String result = null;
+
+        try {
+            result = FileUtils.getStringFromFile(filePath);
+        }
+        catch( Exception e ) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public static String getDataFromSharedFile(Uri uri, Context ctx) {
+        String result = null;
+
+        try {
+            result = FileUtils.getStringFromUri(uri, ctx);
+        }
+        catch( Exception e ) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     public static void shareFile(File file, String mimeType, Activity activity) {
@@ -275,5 +303,54 @@ public class ShareUtils {
         activity.startActivity(Intent.createChooser(intent, "ShopList Data"));
     }
 
+    public static void shareTextData(String data, String mimeType, Activity activity) {
+        if( data == null )
+            return;
 
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setType(mimeType);
+        intent.putExtra(Intent.EXTRA_TEXT, data);
+        //intent.setDataAndType(data, mimeType);
+        /**/
+
+        //activity.startActivity(Intent.createChooser(intent, "ShopList Data"));
+        Intent shareChooser = Intent.createChooser(intent, "Share with ....");
+
+
+        /* non funziona
+        // Add Bluetooth Share-specific data
+        // Create file with text to share
+        Context ctx = activity.getApplicationContext();
+        final File contentFile = saveDataToSharableFile(data, ctx);
+        //Uri contentUri = Uri.fromFile(contentFile);
+        Uri contentUri = FileProvider.getUriForFile(ctx,"it.mfx.shopaholic.fileprovider",contentFile);
+
+        Bundle replacements = new Bundle();
+        shareChooser.putExtra(Intent.EXTRA_REPLACEMENT_EXTRAS, replacements);
+
+        // Create Extras Bundle just for Bluetooth Share
+        Bundle bluetoothExtra = new Bundle(intent.getExtras());
+        replacements.putBundle("com.android.bluetooth", bluetoothExtra);
+
+        // Add file to Bluetooth Share's Extras
+        bluetoothExtra.putParcelable(Intent.EXTRA_STREAM, contentUri);
+        */
+
+        activity.startActivity(shareChooser);
+
+    }
+
+    public static String getDataFromHtmlBody(String html) {
+        Pattern pattern = Pattern.compile("<body>(.*?)</body>");
+        Matcher matcher = pattern.matcher(html);
+        if (matcher.find()) {
+            String json = matcher.group(1);
+            return json;
+        }
+
+        return null;
+    }
 }

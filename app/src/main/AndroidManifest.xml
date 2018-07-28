@@ -36,6 +36,8 @@
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="@string/share_mime_type" />
+                <data android:mimeType="application/json" />
+                <data android:mimeType="text/html" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -43,6 +45,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="content"/>
                 <data android:mimeType="@string/share_mime_type" />
+                <data android:mimeType="application/json" />
+                <data android:mimeType="text/html" />
                 <!-- <data android:mimeType="application/json" /> -->
                 <!--
                 <data android:scheme="file"/>

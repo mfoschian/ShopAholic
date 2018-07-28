@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
@@ -45,7 +46,7 @@ public interface ShopItemDao {
     @Query("SELECT COUNT(*) from shopitems where job_id is null and status = :status")
     int countActiveByStatus(int status);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(ShopItem... shopitems);
 
     @Delete

@@ -43,10 +43,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public Item addItem( Item item ) {
         if( item.id == null ) {
             item.id = newId();
-            itemDao().insertAll(item);
         }
-        else
-            saveItem(item);
+        itemDao().insertAll(item);
 
         return item;
     }

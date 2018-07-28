@@ -250,12 +250,16 @@ public class ShopApplication extends Application {
         });
     }
 
+    public void addShopItem( ShopItem item ) {
+        db().addShopItem(item);
+    }
+
     public void addShopItemAsync(final ShopItem shopItem, final Callback<Boolean> cb) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    db().addShopItem(shopItem);
+                    addShopItem(shopItem);
                     if( cb != null )
                         cb.onSuccess(true);
                 } catch (Exception err) {
@@ -292,13 +296,15 @@ public class ShopApplication extends Application {
     public void saveBulk(final List<Item> items, final List<ShopItem> shopItems) {
         if( items != null ) {
             for (Item item : items) {
-                saveItem(item);
+                //saveItem(item);
+                addItem(item);
             }
         }
 
         if( shopItems != null ) {
             for (ShopItem shopItem : shopItems) {
-                saveShopItem(shopItem);
+                //saveShopItem(shopItem);
+                addShopItem(shopItem);
             }
         }
     }
