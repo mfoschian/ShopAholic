@@ -10,4 +10,6 @@
     <string name="confirm_item_del_titile">Attenzione</string>
     <string name="confirm_item_del_message">Vuoi cancellare questo elemento?</string>
     <string name="delete_item_error">Mi spiace, non posso cancellare questo elemento. Forse lo hai già usato in qualche spesa.</string>
+    <string name="confirm_shopitem_del_titile">Attenzione</string>
+    <string name="confirm_shopitem_del_message">Vuoi cancellare questo elemento?</string>
 </resources>

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import java.util.List;
@@ -129,6 +130,37 @@ public class ShopListViewModel extends AndroidViewModel {
         app.addShopItemAsync(shopItem, cb);
     }
 
+
+
+    public void deleteShopItemAsync(final ShopItem shopItem, @NonNull final ShopApplication.Callback<Boolean> cb ) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if( deleteShopItem(shopItem) )
+                        cb.onSuccess(true);
+                    else
+                        cb.onSuccess(false);
+                }
+                catch (Exception err) {
+                    cb.onError(err);
+                }
+            }
+        });
+    }
+
+
+
+    public boolean deleteShopItem( ShopItem shopItem ) {
+        if( shopItem == null )
+            return true;
+
+        if( !app.isShopItemDeletable( shopItem.sid ))
+            return false;
+
+        app.deleteShopItem( shopItem );
+        return true;
+    }
 
     public void archiveDoneShopeItems(@NonNull final ShopApplication.CallbackSimple cb) {
         app.getShopItemsAsync(new ShopApplication.Callback<List<ShopItem>>() {

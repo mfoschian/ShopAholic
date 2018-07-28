@@ -3,9 +3,11 @@ package it.mfx.shopaholic.fragments;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import it.mfx.shopaholic.R;
+import it.mfx.shopaholic.ShopApplication;
+import it.mfx.shopaholic.models.Shop;
 import it.mfx.shopaholic.models.ShopItem;
 import it.mfx.shopaholic.viewmodels.ShopListViewModel;
 
@@ -60,6 +64,26 @@ public class ShopItemListFragment extends Fragment implements ShopItemListRecycl
         );
     }
 
+    private void deleteShopItem(ShopItem shopItem) {
+        if( shopItem == null )
+            return;
+
+        modelView.deleteShopItemAsync(shopItem, new ShopApplication.Callback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean result) {
+                if( result == true ) {
+                    modelView.loadShopItems();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,6 +112,25 @@ public class ShopItemListFragment extends Fragment implements ShopItemListRecycl
     @Override
     public void onItemSelected(ShopItem item) {
         Log.i("MFX", "Clicked item " + item.item.name);
+    }
+
+    @Override
+    public void onItemQtyChanged(ShopItem item) {
+        if( item != null && item.qty == 0 ) {
+            final ShopItem fitem = item;
+            // Ask if the shop item has to be deleted
+            new AlertDialog.Builder(this.getActivity())
+                    .setTitle(getString(R.string.confirm_shopitem_del_titile))
+                    .setMessage(getString(R.string.confirm_shopitem_del_message))
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            deleteShopItem(fitem);
+                        }})
+                    .setNegativeButton(android.R.string.no, null).show();
+
+        }
     }
 
     @Override

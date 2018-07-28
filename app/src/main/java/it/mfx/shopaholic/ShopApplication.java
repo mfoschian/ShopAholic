@@ -185,6 +185,15 @@ public class ShopApplication extends Application {
         });
     }
 
+    public void deleteItem(Item item) {
+        db().deleteItem(item);
+    }
+
+    public boolean isItemDeletable(String item_id) {
+        boolean ok = ! db().hasShopItem(item_id);
+        return ok;
+    }
+
 
     //==============================================
     //  ShopItems
@@ -291,13 +300,15 @@ public class ShopApplication extends Application {
     }
 
 
-    public void deleteItem(Item item) {
-        db().deleteItem(item);
+    public void deleteShopItem(ShopItem item) {
+        db().deleteShopItem(item);
     }
 
-    public boolean isItemDeletable(String item_id) {
-        boolean ok = ! db().hasShopItem(item_id);
-        return ok;
+    public boolean isShopItemDeletable(String item_id) {
+        //boolean ok = ! db().hasShopItem(item_id);
+        //return ok;
+        // TODO: check if there is a job referenced ...
+        return true;
     }
 
     //==============================================

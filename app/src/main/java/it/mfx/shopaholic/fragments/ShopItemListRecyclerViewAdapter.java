@@ -24,6 +24,7 @@ public class ShopItemListRecyclerViewAdapter extends RecyclerView.Adapter<ShopIt
 
     public interface ShopItemRowListener {
         void onItemSelected( ShopItem item );
+        void onItemQtyChanged( ShopItem item );
     }
     private ShopItemRowListener mListener = null;
 
@@ -72,6 +73,8 @@ public class ShopItemListRecyclerViewAdapter extends RecyclerView.Adapter<ShopIt
                 public void onClick(View v) {
                     item.qty++;
                     holder.qtyView.setText("" + item.qty);
+                    if( mListener != null )
+                        mListener.onItemQtyChanged(item);
                 }
             });
 
@@ -82,6 +85,8 @@ public class ShopItemListRecyclerViewAdapter extends RecyclerView.Adapter<ShopIt
                         item.qty--;
                         holder.qtyView.setText("" + item.qty);
                     }
+                    if( mListener != null )
+                        mListener.onItemQtyChanged(item);
                 }
             });
 

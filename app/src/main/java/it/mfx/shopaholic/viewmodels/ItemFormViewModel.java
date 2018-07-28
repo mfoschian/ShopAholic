@@ -59,7 +59,7 @@ public class ItemFormViewModel extends AndroidViewModel {
             return false;
 
         app.deleteItem(item);
-        mItem.setValue(null);
+        mItem.postValue(null);
 
         return true;
     }
