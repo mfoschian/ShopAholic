@@ -87,15 +87,23 @@ public class ShopListViewModel extends AndroidViewModel {
     }
 
     public void loadShopItems() {
+        loadShopItems(null);
+    }
+
+    public void loadShopItems(final ShopApplication.CallbackSimple cb) {
         app.getShopItemsAsync(new ShopApplication.Callback<List<ShopItem>>() {
             @Override
             public void onSuccess(List<ShopItem> result) {
                 setShopItems(result);
+                if( cb != null )
+                    cb.onSuccess();
             }
 
             @Override
             public void onError(Exception e) {
                 e.printStackTrace();
+                if( cb != null )
+                    cb.onError(e);;
             }
         });
     }
@@ -123,23 +131,26 @@ public class ShopListViewModel extends AndroidViewModel {
 
 
     public void archiveDoneShopeItems(@NonNull final ShopApplication.CallbackSimple cb) {
-        List<ShopItem> items = mShopItems.getValue();
-        if( items == null ) {
-            cb.onSuccess();
-            return;
-        }
-
-        // TODO: create a new Job...
-        String job_id = AppDatabase.newId();
-        for( ShopItem shopItem : items ) {
-            if( shopItem.status == ShopItem.Status.DONE && shopItem.qty > 0 && shopItem.job_id == null ) {
-                shopItem.job_id = job_id;
-            }
-        }
-
-        saveChanges(new ShopApplication.Callback<Integer>() {
+        app.getShopItemsAsync(new ShopApplication.Callback<List<ShopItem>>() {
             @Override
-            public void onSuccess(Integer result) {
+            public void onSuccess(List<ShopItem> items) {
+                if( items == null ) {
+                    cb.onSuccess();
+                    return;
+                }
+
+                // TODO: create a new Job...
+                String job_id = AppDatabase.newId();
+
+                // Update job reference
+                for( ShopItem shopItem : items ) {
+                    if( shopItem.status == ShopItem.Status.DONE && shopItem.qty > 0 && shopItem.job_id == null ) {
+                        shopItem.job_id = job_id;
+                    }
+                }
+
+                // Save data back to db
+                app.saveShopItems(items);
                 cb.onSuccess();
             }
 
@@ -148,8 +159,8 @@ public class ShopListViewModel extends AndroidViewModel {
                 cb.onError(e);
             }
         });
-    }
 
+    }
 
     public void saveChanges(ShopApplication.Callback<Integer> cb) {
         List<ShopItem> items = getShopItems().getValue();

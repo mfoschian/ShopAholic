@@ -319,6 +319,7 @@ public class ComposeListActivity extends AppCompatActivity {
                 String action = data.getData().toString();
                 if( ShopRunActivity.RESULT_STOP.equals(action)) {
                     //TODO: storicize shopitems
+                    // Child activity may have modified the data, so reload them
                     modelView.archiveDoneShopeItems(new ShopApplication.CallbackSimple() {
                         @Override
                         public void onSuccess() {
