@@ -207,7 +207,7 @@ public class ShareUtils {
 
     public static File saveDataToSharableFile(String data, Context ctx) {
 
-        String filename = "data_shopaholic.txt";
+        String filename = "data_shopaholic.json";
         File folder = ctx.getFilesDir(); // + File.separator + "shared";
         File file = null;
 

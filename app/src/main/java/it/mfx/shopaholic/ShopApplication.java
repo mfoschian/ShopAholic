@@ -19,6 +19,7 @@ public class ShopApplication extends Application {
         final public static int CHOOSE_ITEM_REQUEST = 8000;
         final public static int EDIT_ITEM_REQUEST = 8001;
         final public static int SHOP_RUN_REQUEST = 8002;
+        final public static int PERMISSIONS_REQUEST = 8003;
     }
 
     AppDatabase db() {

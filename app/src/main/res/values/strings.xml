@@ -4,7 +4,8 @@
     <string name="title_activity_search_item">SearchItemActivity</string>
     <string name="title_activity_shop_run">ShopRunActivity</string>
     <string name="share_list">Condividi lista</string>
-    <string name="share_mime_type">text/plain</string>
+    <string name="share_mime_type">application/json</string>
+    <string name="share_mime_type_txt">text/plain</string>
     <string name="save_item_label">Salva</string>
     <string name="delete_item_label">Cancella Elemento</string>
     <string name="confirm_item_del_titile">Attenzione</string>
