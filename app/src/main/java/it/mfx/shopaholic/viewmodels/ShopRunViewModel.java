@@ -35,7 +35,7 @@ public class ShopRunViewModel  extends AndroidViewModel {
     }
 
     public void loadShopItems() {
-        app.getShopItemsAsync(new ShopApplication.Callback<List<ShopItem>>() {
+        app.getShopItemsByZoneAsync(new ShopApplication.Callback<List<ShopItem>>() {
             @Override
             public void onSuccess(List<ShopItem> result) {
                 setShopItems(result);

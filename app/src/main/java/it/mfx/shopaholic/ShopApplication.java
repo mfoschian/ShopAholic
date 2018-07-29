@@ -216,6 +216,25 @@ public class ShopApplication extends Application {
         });
     }
 
+    public List<ShopItem> getShopItemsByZone() {
+        List<ShopItem> res = db().getActiveShopItemsByZone();
+        return res;
+    }
+
+    public void getShopItemsByZoneAsync(@NonNull final Callback<List<ShopItem>> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<ShopItem> res = getShopItemsByZone();
+                    cb.onSuccess(res);
+                } catch (Exception err) {
+                    cb.onError(err);
+                }
+            }
+        });
+    }
+
 
     public void saveShopItems( List<ShopItem> shopItems ) {
         db().saveShopItems(shopItems);
