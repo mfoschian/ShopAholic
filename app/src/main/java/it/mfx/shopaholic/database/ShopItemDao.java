@@ -61,6 +61,4 @@ public interface ShopItemDao {
     @Update
     void update(List<ShopItem>  shopItems);
 
-    @Query("SELECT DISTINCT shopName FROM shopitems where job_id is null order by shopName")
-    List<String> getShopNamesSync();
 }

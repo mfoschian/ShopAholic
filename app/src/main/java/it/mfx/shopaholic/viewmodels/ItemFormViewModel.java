@@ -4,7 +4,6 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
@@ -95,7 +94,7 @@ public class ItemFormViewModel extends AndroidViewModel {
     }
 
     public void loadShopNames() {
-        app.getActiveShopNamesAsync(new ShopApplication.Callback<List<String>>() {
+        app.getShopNamesAsync(new ShopApplication.Callback<List<String>>() {
             @Override
             public void onSuccess(List<String> result) {
                 setShopNames(result);
@@ -107,4 +106,38 @@ public class ItemFormViewModel extends AndroidViewModel {
             }
         });
     }
+
+    //==================================
+    // ZoneNames
+    //==================================
+    private MutableLiveData<List<String>> zoneNames = new MutableLiveData<>();
+
+    public LiveData<List<String>> getZoneNames() { return zoneNames; }
+
+    private void setZoneNames( List<String> zoneNames ) {
+        this.zoneNames.postValue(zoneNames);
+    }
+
+    public void loadZoneNames(String shopName) {
+        app.getShopZoneNamesAsync(shopName, new ShopApplication.Callback<List<String>>() {
+            @Override
+            public void onSuccess(List<String> result) {
+                setZoneNames(result);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+/*
+    private String currentShopName;
+
+    public void notifyShopNameChanged(String name) {
+        currentShopName = name;
+
+    }
+*/
+
 }

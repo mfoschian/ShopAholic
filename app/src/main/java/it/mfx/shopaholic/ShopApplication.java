@@ -1,7 +1,6 @@
 package it.mfx.shopaholic;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
@@ -9,7 +8,6 @@ import java.util.List;
 
 import it.mfx.shopaholic.database.AppDatabase;
 import it.mfx.shopaholic.models.Item;
-import it.mfx.shopaholic.models.Shop;
 import it.mfx.shopaholic.models.ShopItem;
 
 public class ShopApplication extends Application {
@@ -279,27 +277,6 @@ public class ShopApplication extends Application {
         });
     }
 
-    public List<String> getActiveShopNames() {
-        return db().getActiveShopNames();
-    }
-
-    public void getActiveShopNamesAsync(final Callback<List<String>> cb) {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    List<String> names = getActiveShopNames();
-                    if( cb != null )
-                        cb.onSuccess(names);
-                } catch (Exception err) {
-                    if( cb != null )
-                        cb.onError(err);
-                }
-            }
-        });
-    }
-
-
     public void deleteShopItem(ShopItem item) {
         db().deleteShopItem(item);
     }
@@ -310,6 +287,52 @@ public class ShopApplication extends Application {
         // TODO: check if there is a job referenced ...
         return true;
     }
+
+    //==============================================
+    //  Shops
+    //==============================================
+
+
+    public List<String> getShopNames() {
+        return db().getActiveShopNames();
+    }
+
+    public void getShopNamesAsync(final Callback<List<String>> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<String> names = getShopNames();
+                    if( cb != null )
+                        cb.onSuccess(names);
+                } catch (Exception err) {
+                    if( cb != null )
+                        cb.onError(err);
+                }
+            }
+        });
+    }
+
+    public List<String> getShopZoneNames(String shop_name) {
+        return db().getZoneNames(shop_name);
+    }
+
+    public void getShopZoneNamesAsync(final String shop_name, final Callback<List<String>> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<String> names = getShopZoneNames(shop_name);
+                    if( cb != null )
+                        cb.onSuccess(names);
+                } catch (Exception err) {
+                    if( cb != null )
+                        cb.onError(err);
+                }
+            }
+        });
+    }
+
 
     //==============================================
     //  Bulk for shared shop list

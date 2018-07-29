@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +37,10 @@ public class EditItemActivity extends AppCompatActivity {
 
     private ItemFormViewModel viewModel;
     private TextInputAutoCompleteTextView shopAutocomplete;
-    private ArrayAdapter<String> autoCompleteAdapter;
+    private ArrayAdapter<String> shopAdapter;
+
+    private TextInputAutoCompleteTextView zoneAutocomplete;
+    private ArrayAdapter<String> zoneAdapter;
 
     protected ShopApplication app() {
         return (ShopApplication) this.getApplication();
@@ -141,9 +144,18 @@ public class EditItemActivity extends AppCompatActivity {
         viewModel.getShopNames().observe(this, new Observer<List<String>>() {
             @Override
             public void onChanged(@Nullable List<String> strings) {
-                autoCompleteAdapter.clear();
-                autoCompleteAdapter.addAll(strings);
-                autoCompleteAdapter.notifyDataSetChanged();
+                shopAdapter.clear();
+                shopAdapter.addAll(strings);
+                shopAdapter.notifyDataSetChanged();
+            }
+        });
+
+        viewModel.getZoneNames().observe(this, new Observer<List<String>>() {
+            @Override
+            public void onChanged(@Nullable List<String> strings) {
+                zoneAdapter.clear();
+                zoneAdapter.addAll(strings);
+                zoneAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -161,33 +173,21 @@ public class EditItemActivity extends AppCompatActivity {
             bar.setDisplayHomeAsUpEnabled(true);
         }
 
-        /*
-        FloatingActionButton butSave = findViewById(R.id.but_item_save);
-        butSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveAndReturn();
-            }
-        });
-
-        <!--
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/but_item_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/fab_margin"
-                app:backgroundTint="@color/colorAccent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@android:drawable/ic_menu_save" />
-        -->
-        */
-
         shopAutocomplete = findViewById(R.id.txt_item_shop);
-        autoCompleteAdapter = new ArrayAdapter<String>(this,
+        shopAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
         shopAutocomplete.setThreshold(1);
-        shopAutocomplete.setAdapter(autoCompleteAdapter);
+        shopAutocomplete.setAdapter(shopAdapter);
+
+
+        zoneAutocomplete = findViewById(R.id.txt_item_zone);
+        zoneAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+        zoneAutocomplete.setThreshold(1);
+        zoneAutocomplete.setAdapter(zoneAdapter);
+
+
+
 
         viewModel = ViewModelProviders.of(this).get(ItemFormViewModel.class);
         final ItemFormViewModel vm = viewModel;
@@ -203,6 +203,7 @@ public class EditItemActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Item result) {
                     vm.setExistingItem(result);
+                    vm.loadZoneNames(result.shopName);
                 }
 
                 @Override
@@ -219,6 +220,18 @@ public class EditItemActivity extends AppCompatActivity {
         }
 
         viewModel.loadShopNames();
+
+        // When leave focus of shop name control, reload zone names autocomplete
+        shopAutocomplete.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus)
+                    return;
+
+                String text = shopAutocomplete.getText().toString();
+                vm.loadZoneNames(text);
+            }
+        });
     }
 
     @Override

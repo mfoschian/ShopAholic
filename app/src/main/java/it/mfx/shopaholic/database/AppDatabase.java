@@ -22,6 +22,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract ItemDao itemDao();
     public abstract ShopItemDao shopItemDao();
+    public abstract ShopDao shopDao();
 
     public static AppDatabase newInstance(Context context) {
         RoomDatabase.Builder<AppDatabase> b = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, dbName);
@@ -97,7 +98,11 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     public List<String> getActiveShopNames() {
-        return shopItemDao().getShopNamesSync();
+        return shopDao().getNamesSync();
+    }
+
+    public List<String> getZoneNames(String shop_id) {
+        return shopDao().getZoneNamesSync(shop_id);
     }
 
 }

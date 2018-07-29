@@ -54,6 +54,45 @@
                 <data android:pathPattern=".*\\.json"/>
                 -->
             </intent-filter>
+            <!--
+            Example 1, handle http requests without mimetypes:
+              <intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <data android:scheme="http" />
+    <data android:host="*" />
+    <data android:pathPattern=".*\\.pdf" />
+  </intent-filter>
+
+Handle with mimetypes, where the suffix is irrelevant:
+
+  <intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <data android:scheme="http" />
+    <data android:host="*" />
+    <data android:mimeType="application/pdf" />
+  </intent-filter>
+
+Handle intent from a file browser app:
+
+  <intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <data android:scheme="file" />
+    <data android:host="*" />
+    <data android:pathPattern=".*\\.pdf" />
+  </intent-filter>
+
+
+
+You should have both a rule with the mimeType and one without if you want to be complete. See
+developer.android.com/guide/components/…  https://developer.android.com/guide/components/intents-filters.html#DataTest
+ – Andrew Sun Dec 16 '16 at 3:33
+
+            -->
         </activity>
         <activity
             android:name=".activities.SearchItemActivity"
@@ -65,7 +104,7 @@
         <activity
             android:name=".activities.ShopRunActivity"
             android:label="@string/title_activity_shop_run"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
