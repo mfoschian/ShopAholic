@@ -116,13 +116,26 @@ public class ShopRunActivity extends AppCompatActivity implements ShopRunListFra
 
         viewModel.loadShopNames();
         refreshUI();
+
     }
 
+
+    private void setShowItemsDoneIcon(boolean isShowing, MenuItem item) {
+
+        item.setChecked( !isShowing );
+        item.setIcon( isShowing ?
+                R.drawable.ic_visibility_24dp
+                : R.drawable.ic_visibility_off_24dp);
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_shop_run, menu);
+        MenuItem item = menu.findItem(R.id.menu_show_items_done);
+        boolean isShowing = viewModel != null ? viewModel.isShowingItemsDone() : false;
+        setShowItemsDoneIcon( isShowing, item);
         return true;
     }
 
@@ -135,9 +148,11 @@ public class ShopRunActivity extends AppCompatActivity implements ShopRunListFra
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_show_items_done) {
-            boolean isShowing = viewModel.isShowingItemsDone();
-            item.setChecked( !isShowing );
-            viewModel.setShowItemsDone( !isShowing );
+            boolean isShowing = ! viewModel.isShowingItemsDone();
+            //item.setChecked( !isShowing );
+            //item.setIcon( isShowing ? R.drawable.ic_visibility_24dp : R.drawable.ic_visibility_off_24dp);
+            setShowItemsDoneIcon(isShowing, item);
+            viewModel.setShowItemsDone( isShowing );
             viewModel.loadShopItems();
             return true;
         }

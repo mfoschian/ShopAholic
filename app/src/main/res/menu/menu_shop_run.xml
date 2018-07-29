@@ -4,14 +4,13 @@
     tools:context="it.mfx.shopaholic.activities.ShopRunActivity">
     <item
         android:id="@+id/menu_shop_stop"
-        android:icon="@drawable/ic_stop_shop"
+        android:icon="@drawable/ic_stop"
         android:title="Fine Spesa"
         app:showAsAction="always" />
     <item
         android:id="@+id/menu_show_items_done"
         android:checkable="true"
-        android:enabled="true"
-        android:icon="@android:drawable/ic_menu_view"
+        android:icon="@drawable/eye_open_or_close"
         android:title="Show Item Done"
         android:visible="true"
         app:showAsAction="ifRoom" />

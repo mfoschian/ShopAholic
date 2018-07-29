@@ -6,4 +6,5 @@
     <color name="colorFree">#0fe04e</color>
     <color name="colorAccentGreen">#00c853</color>
     <color name="whiteSemiOpaque">#55ffffff</color>
+    <color name="iconPrimary">#ffffffff</color>
 </resources>
