@@ -2,19 +2,18 @@ package it.mfx.shopaholic.activities;
 
 import android.Manifest;
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.net.wifi.p2p.WifiP2pManager;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.TintableImageSourceView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -27,16 +26,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.util.List;
 
 import it.mfx.shopaholic.R;
 import it.mfx.shopaholic.ShopApplication;
 import it.mfx.shopaholic.fragments.SearchItemFragment;
 import it.mfx.shopaholic.fragments.ShopItemListFragment;
+import it.mfx.shopaholic.models.ShareableData;
 import it.mfx.shopaholic.models.ShopItem;
 import it.mfx.shopaholic.utils.ShareUtils;
 import it.mfx.shopaholic.viewmodels.ShopListViewModel;
@@ -158,22 +156,24 @@ public class ComposeListActivity extends AppCompatActivity {
         final String mimeType = getString(R.string.share_mime_type);
 
         // First save changes
-        ShareUtils.getSharableData(app(), new ShopApplication.Callback<String>() {
-                    @Override
-                    public void onSuccess(String json) {
-                        /**/
-                        File jsonFile = ShareUtils.saveDataToSharableFile(json,ctx);
-                        if( jsonFile != null )
-                            ShareUtils.shareFile(jsonFile, mimeType, ComposeListActivity.this);
-                        /**/
-                        //ShareUtils.shareTextData(json, mimeType, ComposeListActivity.this);
-                    }
+        app().getShopRunDataAsync(new ShopApplication.Callback<ShareableData>() {
+            @Override
+            public void onSuccess(ShareableData data) {
+                File jsonFile = ShareUtils.saveDataToSharableFile(data, ctx);
+                if (jsonFile != null)
+                    ShareUtils.shareFile(jsonFile, mimeType, ComposeListActivity.this);
 
-                    @Override
-                    public void onError(Exception e) {
+                /**/
+                //ShareUtils.shareTextData(json, mimeType, ComposeListActivity.this);
 
-                    }
-                });
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
     }
 
     private void saveAndShareShopList() {
@@ -182,12 +182,26 @@ public class ComposeListActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Integer result) {
                 shareShopList();
-                //startActivity(fintent,null);
             }
 
             @Override
             public void onError(Exception e) {
 
+            }
+        });
+    }
+
+    private void exportData() {
+
+        app().exportDataAsync(new ShopApplication.Callback<File>() {
+            @Override
+            public void onSuccess(File result) {
+                showMsg(getString(R.string.export_data_succeeded, result.getPath()));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                showMsg(getString(R.string.export_data_failed, e.getCause()));
             }
         });
     }
@@ -276,17 +290,24 @@ public class ComposeListActivity extends AppCompatActivity {
                 }
 
                 if( json != null ) {
-                    ShareUtils.putSharableData(json, app(), new ShopApplication.CallbackSimple() {
-                        @Override
-                        public void onSuccess() {
-                            refreshData();
-                        }
+                    try {
+                        app().importDataAsync(json, new ShopApplication.CallbackSimple() {
+                            @Override
+                            public void onSuccess() {
+                                refreshData();
+                            }
 
-                        @Override
-                        public void onError(Exception e) {
+                            @Override
+                            public void onError(Exception e) {
+                                e.printStackTrace();
+                                showMsg(e.getMessage());
+                            }
+                        });
+                    }
+                    catch( Exception e ) {
+                        showMsg(e.getMessage());
+                    }
 
-                        }
-                    });
                     return;
                 }
             }
@@ -324,6 +345,9 @@ public class ComposeListActivity extends AppCompatActivity {
         }
         else if( id == R.id.menu_share_list ) {
             saveAndShareShopList();
+        }
+        else if( id == R.id.menu_export_data ) {
+            exportData();
         }
 
         return super.onOptionsItemSelected(item);
@@ -397,10 +421,31 @@ public class ComposeListActivity extends AppCompatActivity {
         }
     }
 
-    private void showMsg(String msg) {
+    private void showMsg(final String msg) {
         //Toast
         Log.i("SHOPAHOLIC", msg);
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+
+        boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                            ? Looper.getMainLooper().isCurrentThread()
+                            : Thread.currentThread() == Looper.getMainLooper().getThread();
+
+        //And, if you wish to run something on the UI thread, you can use this:
+
+        if( isUiThread ) {
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        }
+        else {
+
+            final Context ctx = this;
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    //this runs on the UI thread
+                    Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
     }
 
     @Override

@@ -3,29 +3,23 @@ package it.mfx.shopaholic.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import it.mfx.shopaholic.ShopApplication;
 import it.mfx.shopaholic.models.Item;
+import it.mfx.shopaholic.models.ShareableData;
 import it.mfx.shopaholic.models.ShopItem;
 
 public class ShareUtils {
@@ -89,7 +83,7 @@ public class ShareUtils {
         return obj;
     }
 
-   private static JSONObject item2json(Item arg) {
+    private static JSONObject item2json(Item arg) {
         JSONObject obj = new JSONObject();
         try {
             obj.put("id", arg.id);
@@ -105,104 +99,80 @@ public class ShareUtils {
         return obj;
     }
 
-    public static void getSharableData(@NonNull ShopApplication app, @NonNull final ShopApplication.Callback<String> cb) {
-        app.getShopItemsAsync(new ShopApplication.Callback<List<ShopItem>>() {
-            @Override
-            public void onSuccess(List<ShopItem> shopItems) {
-                HashSet<String> items = new HashSet<>();
 
-                JSONArray jShopItems = new JSONArray();
-                JSONArray jItems = new JSONArray();
+    public static String encode(final ShareableData data ) throws Exception {
 
-                for( ShopItem shopItem: shopItems ) {
+        // Convert items
+        JSONArray jItems = new JSONArray();
 
-                    if( ! items.contains(shopItem.item_id) ) {
-                        items.add(shopItem.item_id);
-                        JSONObject jItem = item2json( shopItem.item );
-                        jItems.put(jItem);
-                    }
-
-                    JSONObject jShopItem = shopItem2json(shopItem);
-                    if( jShopItem != null )
-                        jShopItems.put(jShopItem);
-
-                }
-
-                String data = null;
-
-                JSONObject res = new JSONObject();
-                try {
-                    res.put("items", jItems);
-                    res.put("shop_items", jShopItems);
-
-                    data = res.toString();
-                }
-                catch( JSONException je ) {
-                    je.printStackTrace();
-                    cb.onError(je);
-                }
-
-                cb.onSuccess(data);
+        if( data.items != null ) {
+            for (Item item : data.items) {
+                JSONObject jItem = item2json(item);
+                jItems.put(jItem);
             }
+        }
 
-            @Override
-            public void onError(Exception e) {
-                cb.onError(e);
+        // Convert ShopItems
+        JSONArray jShopItems = new JSONArray();
+
+        if( data.shopItems != null ) {
+            for (ShopItem shopItem : data.shopItems) {
+                JSONObject jShopItem = shopItem2json(shopItem);
+                jShopItems.put(jShopItem);
             }
-        });
+        }
 
+        JSONObject obj = new JSONObject();
+        obj.put("items", jItems);
+        obj.put("shop_items", jShopItems);
+
+        String res = obj.toString();
+        return res;
     }
 
+    public static ShareableData decode(@NonNull String data) throws Exception {
 
-    public static void putSharableData(@NonNull String data, @NonNull ShopApplication app, @NonNull final ShopApplication.CallbackSimple cb) {
+        ShareableData res = new ShareableData( new ArrayList<Item>(), new ArrayList<ShopItem>() );
 
-        try {
+        JSONObject jData = new JSONObject(data);
 
-            JSONObject jData = new JSONObject(data);
-
-            JSONArray jItems = jData.getJSONArray("items");
-
-            ArrayList<Item> items = new ArrayList<>();
-            for (int i=0; i < jItems.length(); i++ ) {
+        JSONArray jItems = jData.optJSONArray("items");
+        if( jItems != null ) {
+            for (int i = 0; i < jItems.length(); i++) {
 
                 JSONObject jItem = jItems.getJSONObject(i);
                 Item item = json2Item(jItem);
-                if( item != null )
-                    items.add(item);
+                if (item != null)
+                    res.items.add(item);
             }
+        }
 
 
-            JSONArray jShopItems = jData.getJSONArray("shop_items");
+        JSONArray jShopItems = jData.optJSONArray("shop_items");
 
-            ArrayList<ShopItem> shopItems = new ArrayList<>();
-            for (int i=0; i < jShopItems.length(); i++ ) {
+        if( jShopItems != null ) {
+            for (int i = 0; i < jShopItems.length(); i++) {
 
                 JSONObject jShopItem = jShopItems.getJSONObject(i);
                 ShopItem shopItem = json2shopItem(jShopItem);
-                if( shopItem != null )
-                    shopItems.add(shopItem);
+                if (shopItem != null)
+                    res.shopItems.add(shopItem);
             }
-
-
-            app.saveBulkAsync(items, shopItems, new ShopApplication.CallbackSimple() {
-                @Override
-                public void onSuccess() {
-                    cb.onSuccess();
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    e.printStackTrace();
-                    cb.onError(e);
-                }
-            });
-
-        }
-        catch( JSONException je ) {
-            je.printStackTrace();
-            cb.onError(je);
         }
 
+        return res;
+    }
+
+
+    public static File saveDataToSharableFile(ShareableData data, Context ctx) {
+        try {
+            String s = encode(data);
+            return saveDataToSharableFile(s,ctx);
+        }
+        catch( Exception e ) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static File saveDataToSharableFile(String data, Context ctx) {
@@ -233,8 +203,6 @@ public class ShareUtils {
 
         return file;
     }
-
-
 
     public static String getDataFromSharedFile(String filePath, Context ctx) {
         String result = null;
@@ -353,4 +321,29 @@ public class ShareUtils {
 
         return null;
     }
+
+
+
+    //==============================================
+    //  Export Data
+    //==============================================
+    public static void getAllData(@NonNull final ShopApplication app, @NonNull final ShopApplication.Callback<String> cb ) {
+        app.getItemsAsync(new ShopApplication.Callback<List<Item>>() {
+            @Override
+            public void onSuccess(List<Item> items) {
+
+
+            }
+
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+                cb.onError(e);
+            }
+        });
+
+    }
+
+
 }

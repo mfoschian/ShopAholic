@@ -2,13 +2,22 @@ package it.mfx.shopaholic;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import it.mfx.shopaholic.database.AppDatabase;
 import it.mfx.shopaholic.models.Item;
+import it.mfx.shopaholic.models.ShareableData;
 import it.mfx.shopaholic.models.ShopItem;
+import it.mfx.shopaholic.utils.FileUtils;
+import it.mfx.shopaholic.utils.ShareUtils;
+
+import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class ShopApplication extends Application {
 
@@ -23,8 +32,8 @@ public class ShopApplication extends Application {
     }
 
     AppDatabase db() {
-        if( db == null ) {
-            db = AppDatabase.newInstance( this.getApplicationContext());
+        if (db == null) {
+            db = AppDatabase.newInstance(this.getApplicationContext());
         }
         return db;
     }
@@ -50,11 +59,13 @@ public class ShopApplication extends Application {
 
     public interface Callback<T> {
         void onSuccess(T result);
+
         void onError(Exception e);
     }
 
     public interface CallbackSimple {
         void onSuccess();
+
         void onError(Exception e);
     }
 
@@ -65,10 +76,10 @@ public class ShopApplication extends Application {
                 try {
 
                     int n = db().itemDao().countItems();
-                    if( n == 0 ) {
+                    if (n == 0) {
 
                         int item_to_insert = 20;
-                        for( int i=0; i<item_to_insert; i++ ) {
+                        for (int i = 0; i < item_to_insert; i++) {
                             Item item = new Item();
                             item.name = "Test " + i;
                             item.shopName = "A&O";
@@ -84,8 +95,7 @@ public class ShopApplication extends Application {
                         cb.onSuccess(item_to_insert);
                     }
                     cb.onSuccess(0);
-                }
-                catch( Exception err ) {
+                } catch (Exception err) {
                     cb.onError(err);
                 }
             }
@@ -144,7 +154,7 @@ public class ShopApplication extends Application {
         });
     }
 
-    public void saveItem( Item item ) {
+    public void saveItem(Item item) {
         db().saveItem(item);
     }
 
@@ -154,17 +164,17 @@ public class ShopApplication extends Application {
             public void run() {
                 try {
                     saveItem(item);
-                    if( cb != null )
+                    if (cb != null)
                         cb.onSuccess(true);
                 } catch (Exception err) {
-                    if( cb != null )
+                    if (cb != null)
                         cb.onError(err);
                 }
             }
         });
     }
 
-    public void addItem( Item item ) {
+    public void addItem(Item item) {
         db().addItem(item);
     }
 
@@ -174,10 +184,10 @@ public class ShopApplication extends Application {
             public void run() {
                 try {
                     addItem(item);
-                    if( cb != null )
+                    if (cb != null)
                         cb.onSuccess(true);
                 } catch (Exception err) {
-                    if( cb != null )
+                    if (cb != null)
                         cb.onError(err);
                 }
             }
@@ -189,7 +199,7 @@ public class ShopApplication extends Application {
     }
 
     public boolean isItemDeletable(String item_id) {
-        boolean ok = ! db().hasShopItem(item_id);
+        boolean ok = !db().hasShopItem(item_id);
         return ok;
     }
 
@@ -237,11 +247,11 @@ public class ShopApplication extends Application {
     }
 
 
-    public void saveShopItems( List<ShopItem> shopItems ) {
+    public void saveShopItems(List<ShopItem> shopItems) {
         db().saveShopItems(shopItems);
     }
 
-    public void saveShopItem( ShopItem shopItem ) {
+    public void saveShopItem(ShopItem shopItem) {
         db().saveShopItem(shopItem);
     }
 
@@ -251,10 +261,10 @@ public class ShopApplication extends Application {
             public void run() {
                 try {
                     saveShopItems(shopItems);
-                    if( cb != null )
+                    if (cb != null)
                         cb.onSuccess(0);
                 } catch (Exception err) {
-                    if( cb != null )
+                    if (cb != null)
                         cb.onError(err);
                 }
             }
@@ -267,17 +277,17 @@ public class ShopApplication extends Application {
             public void run() {
                 try {
                     saveShopItem(shopItem);
-                    if( cb != null )
+                    if (cb != null)
                         cb.onSuccess(true);
                 } catch (Exception err) {
-                    if( cb != null )
+                    if (cb != null)
                         cb.onError(err);
                 }
             }
         });
     }
 
-    public void addShopItem( ShopItem item ) {
+    public void addShopItem(ShopItem item) {
         db().addShopItem(item);
     }
 
@@ -287,10 +297,10 @@ public class ShopApplication extends Application {
             public void run() {
                 try {
                     addShopItem(shopItem);
-                    if( cb != null )
+                    if (cb != null)
                         cb.onSuccess(true);
                 } catch (Exception err) {
-                    if( cb != null )
+                    if (cb != null)
                         cb.onError(err);
                 }
             }
@@ -323,10 +333,10 @@ public class ShopApplication extends Application {
             public void run() {
                 try {
                     List<String> names = getShopNames();
-                    if( cb != null )
+                    if (cb != null)
                         cb.onSuccess(names);
                 } catch (Exception err) {
-                    if( cb != null )
+                    if (cb != null)
                         cb.onError(err);
                 }
             }
@@ -343,10 +353,10 @@ public class ShopApplication extends Application {
             public void run() {
                 try {
                     List<String> names = getShopZoneNames(shop_name);
-                    if( cb != null )
+                    if (cb != null)
                         cb.onSuccess(names);
                 } catch (Exception err) {
-                    if( cb != null )
+                    if (cb != null)
                         cb.onError(err);
                 }
             }
@@ -355,38 +365,127 @@ public class ShopApplication extends Application {
 
 
     //==============================================
-    //  Bulk for shared shop list
+    //  Import Data
     //==============================================
-    public void saveBulk(final List<Item> items, final List<ShopItem> shopItems) {
-        if( items != null ) {
-            for (Item item : items) {
+    public void importData(final ShareableData data) {
+        if (data == null)
+            return;
+
+        if (data.items != null) {
+            for (Item item : data.items) {
                 //saveItem(item);
                 addItem(item);
             }
         }
 
-        if( shopItems != null ) {
-            for (ShopItem shopItem : shopItems) {
+        if (data.shopItems != null) {
+            for (ShopItem shopItem : data.shopItems) {
                 //saveShopItem(shopItem);
                 addShopItem(shopItem);
             }
         }
     }
 
-    public void saveBulkAsync(final List<Item> items, final List<ShopItem> shopItems, final CallbackSimple cb) {
+    public void importDataAsync(final String data, final CallbackSimple cb) {
+        try {
+            ShareableData d = ShareUtils.decode(data);
+            importDataAsync(d, cb);
+        } catch (Exception e) {
+            cb.onError(e);
+        }
+    }
+
+    public void importDataAsync(final ShareableData data, final CallbackSimple cb) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    saveBulk(items, shopItems);
-                    if( cb != null )
+                    importData(data);
+                    if (cb != null)
                         cb.onSuccess();
                 } catch (Exception err) {
-                    if( cb != null )
+                    if (cb != null)
                         cb.onError(err);
                 }
             }
         });
 
     }
+
+    //==============================================
+    //  Export Data
+    //==============================================
+
+    public ShareableData getDataToExport() {
+        List<Item> items = getItems();
+        List<ShopItem> shopItems = getShopItems();
+        return new ShareableData(items, shopItems);
+    }
+
+    public ShareableData getShopRunData() {
+        List<ShopItem> shopItems = getShopItems();
+        ArrayList<Item> usedItems = new ArrayList<>();
+
+        // Export only the used items, not all
+        HashSet<String> keys = new HashSet<>();
+
+        for (ShopItem shopItem : shopItems) {
+
+            if (!keys.contains(shopItem.item_id)) {
+                keys.add(shopItem.item_id);
+                usedItems.add(shopItem.item);
+            }
+        }
+
+
+        ShareableData data = new ShareableData(usedItems, shopItems);
+        return data;
+    }
+
+    public void getShopRunDataAsync(@NonNull final Callback<ShareableData> cb ) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ShareableData data = getShopRunData();
+                    cb.onSuccess(data);
+                }
+                catch( Exception e ) {
+                    cb.onError(e);
+                }
+
+            }
+        });
+    }
+
+    public void exportData(@NonNull final ShopApplication.Callback<File> cb) {
+
+        ShareableData data = getDataToExport();
+
+        try {
+            String json = ShareUtils.encode(data);
+
+            File saveFolder = getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+
+            File file = new File(saveFolder, FileUtils.getDateTimePrefix() + "_shopaholic.json");
+
+            FileUtils.writeStringToFile(file.getAbsolutePath(), json, getApplicationContext());
+
+            cb.onSuccess(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+            cb.onError(e);
+        }
+
+    }
+
+    public void exportDataAsync(@NonNull final ShopApplication.Callback<File> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                exportData(cb);
+            }
+        });
+    }
+
 }

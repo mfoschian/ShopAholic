@@ -2,6 +2,7 @@ package it.mfx.shopaholic.utils;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,6 +10,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class FileUtils {
 
@@ -74,5 +78,15 @@ public class FileUtils {
             throw e;
         }
 
+    }
+
+    //
+    // MISC
+    //
+    public static String getDateTimePrefix() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ITALIAN);
+        Date now = new Date();
+        String fileName = formatter.format(now);
+        return fileName;
     }
 }
