@@ -397,7 +397,8 @@ public class ShopApplication extends Application {
         final String[] acceptedImportTypes = new String[] {
                 getString(R.string.share_mime_type),
                 "text/html",
-                "application/json"
+                "application/json",
+                "application/octet-stream"
         };
 
 
