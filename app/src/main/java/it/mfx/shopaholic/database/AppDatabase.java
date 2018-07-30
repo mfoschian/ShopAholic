@@ -5,6 +5,7 @@ import android.arch.persistence.room.Database;
 
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 
 import java.util.List;
@@ -12,10 +13,11 @@ import java.util.UUID;
 
 
 import it.mfx.shopaholic.database.migrations.Migration_09_to_10;
+import it.mfx.shopaholic.database.migrations.Migration_10_to_11;
 import it.mfx.shopaholic.models.Item;
 import it.mfx.shopaholic.models.ShopItem;
 
-@Database(entities = {Item.class, ShopItem.class}, version = 10, exportSchema = false)
+@Database(entities = {Item.class, ShopItem.class}, version = 11, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static String dbName = "shopaholicDB";
@@ -25,8 +27,15 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract ShopDao shopDao();
 
     public static AppDatabase newInstance(Context context) {
+
+        Migration M_09_10 = new Migration_09_to_10();
+        Migration M_10_11 = new Migration_10_to_11();
+
+
         RoomDatabase.Builder<AppDatabase> b = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, dbName);
-        AppDatabase db = b //.addMigrations( new Migration_09_to_10() )
+        AppDatabase db = b
+
+                .addMigrations( M_09_10, M_10_11  )
                 .fallbackToDestructiveMigration()
                 .build();
 

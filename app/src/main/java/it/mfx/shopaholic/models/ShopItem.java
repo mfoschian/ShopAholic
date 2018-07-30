@@ -3,6 +3,7 @@ package it.mfx.shopaholic.models;
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.Relation;
 import android.arch.persistence.room.RoomWarnings;
@@ -10,7 +11,12 @@ import android.support.annotation.NonNull;
 
 
 
-@Entity(tableName = "shopitems")
+@Entity(tableName = "shopitems",
+        indices = {
+                @Index(value = "item_id"),
+                @Index(value = "status"),
+                @Index(value = "job_id")
+        })
 public class ShopItem {
 
     @PrimaryKey //(autoGenerate = true)
