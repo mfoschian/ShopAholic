@@ -16,4 +16,8 @@
     <string name="export_data_label">Export Dati</string>
     <string name="export_data_succeeded">Dati esportati in %s</string>
     <string name="export_data_failed">Dati non esportati: %s</string>
+    <string name="import_data_label">Import Dati</string>
+    <string name="import_data_succeeded">Dati importati !</string>
+    <string name="import_data_failed">Dati non importati: %s</string>
+    <string name="action_get_content_not_handled">Impossibile scegliere il file, il cellulare non supporta questa funzione :-(</string>
 </resources>

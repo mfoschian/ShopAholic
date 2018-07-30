@@ -1,6 +1,8 @@
 package it.mfx.shopaholic;
 
 import android.app.Application;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -29,6 +31,7 @@ public class ShopApplication extends Application {
         final public static int EDIT_ITEM_REQUEST = 8001;
         final public static int SHOP_RUN_REQUEST = 8002;
         final public static int PERMISSIONS_REQUEST = 8003;
+        final public static int CHOOSE_IMPORT_FILE_REQUEST = 8004;
     }
 
     AppDatabase db() {
@@ -386,6 +389,87 @@ public class ShopApplication extends Application {
         }
     }
 
+
+    private boolean isAcceptedImportType(String type) {
+        if( type == null )
+            return true;
+
+        final String[] acceptedImportTypes = new String[] {
+                getString(R.string.share_mime_type),
+                "text/html",
+                "application/json"
+        };
+
+
+        boolean type_accepted = false;
+        for( String acceptedType: acceptedImportTypes) {
+            if( acceptedType.equals(type)) {
+                type_accepted = true;
+                break;
+            }
+        }
+
+        return type_accepted;
+    }
+
+    private boolean isAcceptedAction(String action) {
+        if(Intent.ACTION_SEND.equals(action)
+                || Intent.ACTION_VIEW.equals(action))
+            return true;
+        else
+            return false;
+    }
+
+
+    public boolean importDataAsync(final Intent intent, final CallbackSimple cb) {
+        try {
+            //Check shared data
+            String action = intent.getAction();
+            String type = intent.getType();
+
+            if(isAcceptedAction(action) && isAcceptedImportType(type)) {
+
+                // Load data shared from outside
+                String json = intent.getStringExtra(Intent.EXTRA_TEXT);
+                if( json != null ) {
+                    importDataAsync(json, cb);
+                    return true;
+                }
+                // maybe a file was passed
+                Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                if (uri == null)
+                    uri = intent.getData();
+
+                if (uri != null) {
+                    importDataAsync(uri, cb);
+                    return true;
+                }
+
+            }
+
+            //cb.onError(new Exception("Cannot import this file"));
+            return false;
+        }
+        catch (Exception e) {
+            cb.onError(e);
+            return false;
+        }
+    }
+
+    public void importDataAsync(final Uri uri, final CallbackSimple cb) {
+        try {
+            if( uri == null ) {
+                cb.onError(new Exception("URI is null"));
+                return;
+            }
+            String data = ShareUtils.getDataFromSharedFile(uri, this);
+            ShareableData d = ShareUtils.decode(data);
+            importDataAsync(d, cb);
+        } catch (Exception e) {
+            cb.onError(e);
+        }
+    }
+
     public void importDataAsync(final String data, final CallbackSimple cb) {
         try {
             ShareableData d = ShareUtils.decode(data);
@@ -458,6 +542,12 @@ public class ShopApplication extends Application {
         });
     }
 
+    final static private String[] export_papable_folders = new String[] {
+        Environment.DIRECTORY_DOCUMENTS,
+                Environment.DIRECTORY_DOWNLOADS
+    };
+
+
     public void exportData(@NonNull final ShopApplication.Callback<File> cb) {
 
         ShareableData data = getDataToExport();
@@ -465,7 +555,18 @@ public class ShopApplication extends Application {
         try {
             String json = ShareUtils.encode(data);
 
-            File saveFolder = getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            File saveFolder = null;
+            for( String folder_name : export_papable_folders ) {
+                saveFolder = getExternalStoragePublicDirectory(folder_name);
+
+                if (saveFolder.exists() && saveFolder.canWrite())
+                    break;
+            }
+
+            if( saveFolder == null ) {
+                cb.onError(new Exception("Cannot find a place where save the data :-("));
+                return;
+            }
 
             File file = new File(saveFolder, FileUtils.getDateTimePrefix() + "_shopaholic.json");
 

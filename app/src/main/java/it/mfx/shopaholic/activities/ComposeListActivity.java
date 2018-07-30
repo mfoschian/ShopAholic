@@ -3,6 +3,7 @@ package it.mfx.shopaholic.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -206,26 +207,47 @@ public class ComposeListActivity extends AppCompatActivity {
         });
     }
 
-    public boolean isTypeAccepted(String type) {
-        if( type == null )
-            return true;
 
-        final String[] acceptedTypes = new String[] {
-                getString(R.string.share_mime_type),
-                "text/html",
-                "application/json"
-        };
+    public void performFileSearch() {
 
-        boolean type_accepted = false;
-        for( String acceptedType: acceptedTypes ) {
-            if( acceptedType.equals(type)) {
-                type_accepted = true;
-                break;
-            }
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+
+        // If one wanted to search for ogg vorbis files, the type would be "audio/ogg".
+        // To search for all documents available via installed storage providers,
+        // it would be "*/*".
+        //intent.setType("image/*");
+        //intent.setType("text/xml");   //XML file only
+        intent.setType("*/*");      //all files
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        try {
+            startActivityForResult(intent, ShopApplication.IntentRequests.CHOOSE_IMPORT_FILE_REQUEST );
         }
-
-        return type_accepted;
+        catch( ActivityNotFoundException e) {
+            Log.d("OPENFILE", "No activity to handle intent ACTION_OPEN_DOCUMENT");
+            showMsg(getString(R.string.action_get_content_not_handled));
+        }
     }
+
+    private boolean tryImportData(Intent intent) {
+
+        boolean can_import_intent = app().importDataAsync(intent, new ShopApplication.CallbackSimple() {
+            @Override
+            public void onSuccess() {
+                showMsg(getString(R.string.import_data_succeeded));
+                refreshData();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+                showMsg(getString(R.string.import_data_failed, e.getMessage()));
+            }
+        });
+
+        return can_import_intent;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -256,64 +278,11 @@ public class ComposeListActivity extends AppCompatActivity {
         boolean permissions_ok = requestPermissions(permissions);
         //if( !permissions_ok )
 
-        //Check shared data
         Intent intent = getIntent();
-        String action = intent.getAction();
-        String type = intent.getType();
-        //final String mimeType = getString(R.string.share_mime_type);
-        if(Intent.ACTION_SEND.equals(action)
-                || Intent.ACTION_VIEW.equals(action)) {
+        boolean can_import_intent = tryImportData(intent);
 
-            boolean type_accepted = isTypeAccepted(type);
-
-            if( type_accepted ) {
-                // Load data shared from outside
-                String json = intent.getStringExtra(Intent.EXTRA_TEXT);
-                if( json == null ) {
-                    // maybe a file was passed
-                    Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-                    if( uri == null )
-                        uri = intent.getData();
-
-                    if( uri != null ) {
-                        //String scheme = uri.getScheme();
-                        //String path = uri.getEncodedPath();
-                        //json = ShareUtils.getDataFromSharedFile(path, this);
-                        json = ShareUtils.getDataFromSharedFile(uri, this);
-
-                        /*
-                        String json2 = ShareUtils.getDataFromHtmlBody(json);
-                        if( json2 != null )
-                            json = json2;
-                        */
-                    }
-                }
-
-                if( json != null ) {
-                    try {
-                        app().importDataAsync(json, new ShopApplication.CallbackSimple() {
-                            @Override
-                            public void onSuccess() {
-                                refreshData();
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                                e.printStackTrace();
-                                showMsg(e.getMessage());
-                            }
-                        });
-                    }
-                    catch( Exception e ) {
-                        showMsg(e.getMessage());
-                    }
-
-                    return;
-                }
-            }
-        }
-
-        refreshData();
+        if( !can_import_intent )
+            refreshData();
     }
 
     private void subscribeUI() {
@@ -348,6 +317,9 @@ public class ComposeListActivity extends AppCompatActivity {
         }
         else if( id == R.id.menu_export_data ) {
             exportData();
+        }
+        else if( id == R.id.menu_import_data ) {
+            performFileSearch();
         }
 
         return super.onOptionsItemSelected(item);
@@ -418,6 +390,13 @@ public class ComposeListActivity extends AppCompatActivity {
                 }
             }
             refreshData();
+        }
+        else if( requestCode == ShopApplication.IntentRequests.CHOOSE_IMPORT_FILE_REQUEST
+                && resultCode == Activity.RESULT_OK) {
+
+            boolean can_import = tryImportData(data);
+            if( !can_import )
+                showMsg(getString(R.string.import_data_failed, "File not supported"));
         }
     }
 

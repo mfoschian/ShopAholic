@@ -65,9 +65,25 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="content" android:host="*" />
 
-                <data android:pathPattern=".*\.json" />
                 <data android:pathPattern=".*\\.json" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PICK" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="file" android:host="*" />
+
                 <data android:pathPattern=".*\\.json" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PICK" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" android:host="*" />
+
+                <data android:scheme="content" android:host="*" />
+
+                <data android:mimeType="@string/share_mime_type" />
+                <data android:mimeType="text/html" />
+                <data android:mimeType="*/*" />
             </intent-filter>
             <intent-filter>
                 <!-- Example 1, handle http requests without mimetypes: -->
