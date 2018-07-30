@@ -413,6 +413,10 @@ public class ShopApplication extends Application {
     }
 
     private boolean isAcceptedAction(String action) {
+        if( action == null )
+            // Can be an intent returned from CHOOSE_FILE request ...
+            return true;
+
         if(Intent.ACTION_SEND.equals(action)
                 || Intent.ACTION_VIEW.equals(action))
             return true;
