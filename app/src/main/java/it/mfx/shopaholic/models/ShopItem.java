@@ -40,7 +40,6 @@ public class ShopItem {
     //@Embedded(prefix = "item")
     @Embedded
     @SuppressWarnings(RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
-    //@Relation(parentColumn = "sid", entityColumn = "")
     public Item item;
 
 

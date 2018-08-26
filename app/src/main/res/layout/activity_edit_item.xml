@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.EditItemActivity">
+    tools:context=".ui.activities.EditItemActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -81,7 +81,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" >
 
-        <it.mfx.shopaholic.customviews.TextInputAutoCompleteTextView
+        <it.mfx.shopaholic.ui.customviews.TextInputAutoCompleteTextView
             android:id="@+id/txt_item_shop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -103,7 +103,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout3">
 
-        <it.mfx.shopaholic.customviews.TextInputAutoCompleteTextView
+        <it.mfx.shopaholic.ui.customviews.TextInputAutoCompleteTextView
             android:id="@+id/txt_item_zone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

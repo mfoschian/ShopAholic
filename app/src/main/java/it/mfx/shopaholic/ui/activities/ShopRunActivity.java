@@ -1,4 +1,4 @@
-package it.mfx.shopaholic.activities;
+package it.mfx.shopaholic.ui.activities;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -22,7 +22,7 @@ import java.util.List;
 
 import it.mfx.shopaholic.R;
 import it.mfx.shopaholic.ShopApplication;
-import it.mfx.shopaholic.fragments.ShopRunListFragment;
+import it.mfx.shopaholic.ui.fragments.ShopRunListFragment;
 import it.mfx.shopaholic.viewmodels.ShopRunViewModel;
 
 public class ShopRunActivity extends AppCompatActivity implements ShopRunListFragment.Listener {

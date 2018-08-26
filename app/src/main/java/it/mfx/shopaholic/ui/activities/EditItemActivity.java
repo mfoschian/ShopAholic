@@ -1,5 +1,6 @@
-package it.mfx.shopaholic.activities;
+package it.mfx.shopaholic.ui.activities;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
@@ -16,17 +17,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import it.mfx.shopaholic.R;
 import it.mfx.shopaholic.ShopApplication;
-import it.mfx.shopaholic.customviews.TextInputAutoCompleteTextView;
+import it.mfx.shopaholic.ui.customviews.TextInputAutoCompleteTextView;
+import it.mfx.shopaholic.ui.Utils;
 import it.mfx.shopaholic.models.Item;
 import it.mfx.shopaholic.viewmodels.ItemFormViewModel;
 
@@ -46,6 +46,13 @@ public class EditItemActivity extends AppCompatActivity {
         return (ShopApplication) this.getApplication();
     }
 
+
+    public static void openGUI(String item_id, Activity parent ) {
+        Intent intent = new Intent(parent, EditItemActivity.class);
+        intent.putExtra(EditItemActivity.ITEM_ID_ARG, item_id);
+        parent.startActivityForResult(intent, ShopApplication.IntentRequests.EDIT_ITEM_REQUEST);
+
+    }
 
     private void save(@NonNull final ShopApplication.Callback<Item> listener) {
 
@@ -125,9 +132,8 @@ public class EditItemActivity extends AppCompatActivity {
     }
 
     private void showMsg(String msg) {
-        //Toast
         Log.i("ITEMEDT", msg);
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        Utils.showMsg(this, msg);
     }
 
     private void subscribeUI() {
@@ -286,16 +292,16 @@ public class EditItemActivity extends AppCompatActivity {
         TextView txt;
 
         txt = findViewById(R.id.txt_item_name);
-        item.name = txt.getText().toString();
+        item.name = txt.getText().toString().trim();
 
         txt = findViewById(R.id.txt_item_description);
         item.description = txt.getText().toString();
 
         txt = findViewById(R.id.txt_item_shop);
-        item.shopName = txt.getText().toString();
+        item.shopName = txt.getText().toString().trim();
 
         txt = findViewById(R.id.txt_item_zone);
-        item.zoneName = txt.getText().toString();
+        item.zoneName = txt.getText().toString().trim();
 
     }
 

@@ -1,6 +1,5 @@
-package it.mfx.shopaholic.fragments;
+package it.mfx.shopaholic.ui.fragments;
 
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import it.mfx.shopaholic.R;
-//import it.mfx.shopaholic.fragments.ShopItemListFragment.OnListFragmentInteractionListener;
+//import it.mfx.shopaholic.ui.fragments.ShopItemListFragment.OnListFragmentInteractionListener;
 import it.mfx.shopaholic.models.ShopItem;
 
 import java.util.ArrayList;
@@ -90,16 +89,17 @@ public class ShopItemListRecyclerViewAdapter extends RecyclerView.Adapter<ShopIt
                 }
             });
 
-            holder.mView.setOnClickListener(new View.OnClickListener() {
+            holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View v) {
+                public boolean onLongClick(View v) {
 
                     if (null != mListener) {
                         // Notify the active callbacks interface (the activity, if the
                         // fragment is attached to one) that an item has been selected.
                         mListener.onItemSelected(holder.mItem);
+                        return true;
                     }
-
+                    return false;
                 }
             });
         }

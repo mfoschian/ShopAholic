@@ -199,6 +199,11 @@ public class ShopListViewModel extends AndroidViewModel {
         app.saveShopItemsAsync(items, cb);
     }
 
+    public void saveShopItem(@NonNull ShopItem sitem, ShopApplication.Callback<Boolean> cb) {
+
+        app.saveShopItemAsync(sitem, cb);
+    }
+
     @Override
     protected void onCleared() {
         super.onCleared();

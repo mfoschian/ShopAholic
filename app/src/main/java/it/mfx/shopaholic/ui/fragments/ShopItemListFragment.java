@@ -1,4 +1,4 @@
-package it.mfx.shopaholic.fragments;
+package it.mfx.shopaholic.ui.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 
 import it.mfx.shopaholic.R;
 import it.mfx.shopaholic.ShopApplication;
-import it.mfx.shopaholic.models.Shop;
+import it.mfx.shopaholic.ui.activities.EditItemActivity;
 import it.mfx.shopaholic.models.ShopItem;
 import it.mfx.shopaholic.viewmodels.ShopListViewModel;
 
@@ -72,6 +72,7 @@ public class ShopItemListFragment extends Fragment implements ShopItemListRecycl
             @Override
             public void onSuccess(Boolean result) {
                 if( result == true ) {
+                    // TODO: adapter.notifyItemRemoved(xxx);
                     modelView.loadShopItems();
                 }
             }
@@ -112,11 +113,14 @@ public class ShopItemListFragment extends Fragment implements ShopItemListRecycl
     @Override
     public void onItemSelected(ShopItem item) {
         Log.i("MFX", "Clicked item " + item.item.name);
+        EditItemActivity.openGUI(item.item.id, this.getActivity());
     }
 
     @Override
     public void onItemQtyChanged(ShopItem item) {
-        if( item != null && item.qty == 0 ) {
+        if( item == null )
+            return;
+        if( item.qty == 0 ) {
             final ShopItem fitem = item;
             // Ask if the shop item has to be deleted
             new AlertDialog.Builder(this.getActivity())
@@ -130,6 +134,20 @@ public class ShopItemListFragment extends Fragment implements ShopItemListRecycl
                         }})
                     .setNegativeButton(android.R.string.no, null).show();
 
+        }
+        else {
+            // Save item to db
+            modelView.saveShopItem(item, new ShopApplication.Callback<Boolean>() {
+                @Override
+                public void onSuccess(Boolean result) {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                }
+            });
         }
     }
 

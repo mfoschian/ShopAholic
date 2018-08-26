@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="it.mfx.shopaholic.activities.ShopRunActivity">
+    tools:context=".ui.activities.ShopRunActivity">
     <item
         android:id="@+id/menu_shop_stop"
         android:icon="@drawable/ic_stop"

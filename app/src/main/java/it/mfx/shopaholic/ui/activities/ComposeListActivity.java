@@ -1,4 +1,4 @@
-package it.mfx.shopaholic.activities;
+package it.mfx.shopaholic.ui.activities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -7,7 +7,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -33,8 +32,9 @@ import java.io.File;
 
 import it.mfx.shopaholic.R;
 import it.mfx.shopaholic.ShopApplication;
-import it.mfx.shopaholic.fragments.SearchItemFragment;
-import it.mfx.shopaholic.fragments.ShopItemListFragment;
+import it.mfx.shopaholic.ui.fragments.SearchItemFragment;
+import it.mfx.shopaholic.ui.fragments.ShopItemListFragment;
+import it.mfx.shopaholic.models.Item;
 import it.mfx.shopaholic.models.ShareableData;
 import it.mfx.shopaholic.models.ShopItem;
 import it.mfx.shopaholic.utils.ShareUtils;
@@ -124,6 +124,10 @@ public class ComposeListActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void onItemUpdated( Item item ) {
+        refreshData();
     }
 
     private void runShop() {
@@ -397,6 +401,23 @@ public class ComposeListActivity extends AppCompatActivity {
             boolean can_import = tryImportData(data);
             if( !can_import )
                 showMsg(getString(R.string.import_data_failed, "File not supported"));
+        }
+        else if( requestCode == ShopApplication.IntentRequests.EDIT_ITEM_REQUEST
+                && resultCode == Activity.RESULT_OK) {
+
+            String item_id = data.getData().toString();
+
+            app().getItemByIdAsync(item_id, new ShopApplication.Callback<Item>() {
+                @Override
+                public void onSuccess(Item item) {
+                    onItemUpdated(item);
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                }
+            });
         }
     }
 

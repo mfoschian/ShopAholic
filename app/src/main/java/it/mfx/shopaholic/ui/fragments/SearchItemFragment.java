@@ -1,10 +1,9 @@
-package it.mfx.shopaholic.fragments;
+package it.mfx.shopaholic.ui.fragments;
 
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -18,7 +17,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,9 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.mfx.shopaholic.R;
-import it.mfx.shopaholic.ShopApplication;
-import it.mfx.shopaholic.activities.EditItemActivity;
-import it.mfx.shopaholic.activities.SearchItemActivity;
 import it.mfx.shopaholic.models.Item;
 import it.mfx.shopaholic.viewmodels.ShopListViewModel;
 

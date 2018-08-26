@@ -1,4 +1,4 @@
-package it.mfx.shopaholic.customviews;
+package it.mfx.shopaholic.ui.customviews;
 
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
