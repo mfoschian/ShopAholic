@@ -291,18 +291,22 @@ public class EditItemActivity extends AppCompatActivity {
     void retrieveDataFor(@NonNull Item item) {
         TextView txt;
 
-        txt = findViewById(R.id.txt_item_name);
-        item.name = txt.getText().toString().trim();
+        try {
+            txt = findViewById(R.id.txt_item_name);
+            item.name = txt.getText().toString().trim();
 
-        txt = findViewById(R.id.txt_item_description);
-        item.description = txt.getText().toString();
+            txt = findViewById(R.id.txt_item_description);
+            item.description = txt.getText().toString();
 
-        txt = findViewById(R.id.txt_item_shop);
-        item.shopName = txt.getText().toString().trim();
+            txt = findViewById(R.id.txt_item_shop);
+            item.shopName = txt.getText().toString().trim();
 
-        txt = findViewById(R.id.txt_item_zone);
-        item.zoneName = txt.getText().toString().trim();
-
+            txt = findViewById(R.id.txt_item_zone);
+            item.zoneName = txt.getText().toString().trim();
+        }
+        catch( Exception e ) {
+            e.printStackTrace();
+        }
     }
 
     void renderDataFor(Item item) {
@@ -311,17 +315,22 @@ public class EditItemActivity extends AppCompatActivity {
 
         TextView txt;
 
-        txt = findViewById(R.id.txt_item_name);
-        txt.setText(item.name);
+        try {
+            txt = findViewById(R.id.txt_item_name);
+            txt.setText(item.name);
 
-        txt = findViewById(R.id.txt_item_description);
-        txt.setText(item.description);
+            txt = findViewById(R.id.txt_item_description);
+            txt.setText(item.description);
 
-        txt = findViewById(R.id.txt_item_shop);
-        txt.setText(item.shopName);
+            txt = findViewById(R.id.txt_item_shop);
+            txt.setText(item.shopName);
 
-        txt = findViewById(R.id.txt_item_zone);
-        txt.setText(item.zoneName);
+            txt = findViewById(R.id.txt_item_zone);
+            txt.setText(item.zoneName);
+        }
+        catch( Exception e ) {
+            e.printStackTrace();
+        }
 
     }
 
