@@ -3,6 +3,8 @@ package it.mfx.shopaholic.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
@@ -267,6 +269,27 @@ public class ShareUtils {
             activity.startActivity(intent);
         }
         */
+
+        /* code to try ....
+        // Get all activity that listen to this intent in a list.
+        PackageManager packageManager = ctx.getPackageManager();
+        List<ResolveInfo> resInfoList = packageManager.queryIntentActivities(intent , PackageManager.MATCH_DEFAULT_ONLY);
+
+        // Loop the activity list.
+        int size = resInfoList.size();
+        for(int i=0;i<size;i++)
+        {
+            ResolveInfo resolveInfo = resInfoList.get(i);
+            // Get activity package name.
+            String packageName = resolveInfo.activityInfo.packageName;
+
+            // Grant uri permission to each activity.
+            //ctx.grantUriPermission(packageName, fileUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            ctx.grantUriPermission(packageName, fileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+        */
+
+
 
         activity.startActivity(Intent.createChooser(intent, "ShopList Data"));
     }
