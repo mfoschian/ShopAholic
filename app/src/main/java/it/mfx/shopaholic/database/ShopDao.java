@@ -35,7 +35,9 @@ public interface ShopDao {
     void delete(Shop shop);
     */
 
-    //@Query("SELECT DISTINCT shopName FROM shopitems where job_id is null order by shopName")
+    @Query("SELECT DISTINCT shopName FROM shopitems where job_id is null order by shopName")
+    List<String> getActiveNamesSync();
+
     @Query("SELECT DISTINCT shopName FROM items order by shopName")
     List<String> getNamesSync();
 

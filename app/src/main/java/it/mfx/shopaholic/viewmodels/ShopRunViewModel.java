@@ -65,7 +65,7 @@ public class ShopRunViewModel  extends AndroidViewModel {
     }
 
     public void loadShopNames() {
-        app.getShopNamesAsync(new ShopApplication.Callback<List<String>>() {
+        app.getActiveShopNamesAsync(new ShopApplication.Callback<List<String>>() {
             @Override
             public void onSuccess(List<String> result) {
                 setShopNames(result);

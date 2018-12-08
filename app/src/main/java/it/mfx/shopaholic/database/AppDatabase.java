@@ -108,8 +108,12 @@ public abstract class AppDatabase extends RoomDatabase {
         shopItemDao().update(shopitem);
     }
 
-    public List<String> getActiveShopNames() {
+    public List<String> getShopNames() {
         return shopDao().getNamesSync();
+    }
+
+    public List<String> getActiveShopNames() {
+        return shopDao().getActiveNamesSync();
     }
 
     public List<String> getZoneNames(String shop_id) {

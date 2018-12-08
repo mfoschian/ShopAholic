@@ -327,7 +327,7 @@ public class ShopApplication extends Application {
 
 
     public List<String> getShopNames() {
-        return db().getActiveShopNames();
+        return db().getShopNames();
     }
 
     public void getShopNamesAsync(final Callback<List<String>> cb) {
@@ -336,6 +336,26 @@ public class ShopApplication extends Application {
             public void run() {
                 try {
                     List<String> names = getShopNames();
+                    if (cb != null)
+                        cb.onSuccess(names);
+                } catch (Exception err) {
+                    if (cb != null)
+                        cb.onError(err);
+                }
+            }
+        });
+    }
+
+    public List<String> getActiveShopNames() {
+        return db().getActiveShopNames();
+    }
+
+    public void getActiveShopNamesAsync(final Callback<List<String>> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<String> names = getActiveShopNames();
                     if (cb != null)
                         cb.onSuccess(names);
                 } catch (Exception err) {
