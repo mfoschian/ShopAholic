@@ -54,7 +54,7 @@ public class ComposeListActivity extends AppCompatActivity {
     private static final String[] permissions = new String[] {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA
+            //Manifest.permission.CAMERA
     };
 
 
