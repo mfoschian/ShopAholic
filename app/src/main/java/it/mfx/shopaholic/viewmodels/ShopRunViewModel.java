@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import it.mfx.shopaholic.ShopApplication;
+import it.mfx.shopaholic.models.Item;
 import it.mfx.shopaholic.models.ShopItem;
 
 public class ShopRunViewModel  extends AndroidViewModel {
@@ -24,7 +25,32 @@ public class ShopRunViewModel  extends AndroidViewModel {
     // ShopItems
     //==================================
 
+    public enum ItemsOrder {
+        BY_ZONE,
+        BY_NAME,
+    }
+
+    private ItemsOrder mItemsOrder = ItemsOrder.BY_ZONE;
+
+    public ItemsOrder getItemsOrder() { return mItemsOrder; }
+    public ItemsOrder toggleItemOrder() {
+        switch( mItemsOrder ) {
+            case BY_NAME: mItemsOrder = ItemsOrder.BY_ZONE; break;
+            case BY_ZONE: mItemsOrder = ItemsOrder.BY_NAME; break;
+        }
+        return mItemsOrder;
+    }
+
+    //public boolean areItemsOrderedByName() { return mItemsOrder == ItemsOrder.BY_NAME; }
+    //public void setItemOrderByName() { mItemsOrder = ItemsOrder.BY_NAME; }
+
+    //public boolean areItemsOrderedByZone() { return mItemsOrder == ItemsOrder.BY_ZONE; }
+    //public void setItemOrderByZone() { mItemsOrder = ItemsOrder.BY_ZONE; }
+
+
+
     private MutableLiveData<List<ShopItem>> mShopItems = new MutableLiveData<>();
+
 
     public LiveData<List<ShopItem>> getShopItems() {
         return mShopItems;
@@ -35,7 +61,7 @@ public class ShopRunViewModel  extends AndroidViewModel {
     }
 
     public void loadShopItems() {
-        app.getShopItemsByZoneAsync(new ShopApplication.Callback<List<ShopItem>>() {
+        ShopApplication.Callback<List<ShopItem>> cb = new ShopApplication.Callback<List<ShopItem>>() {
             @Override
             public void onSuccess(List<ShopItem> result) {
                 setShopItems(result);
@@ -45,7 +71,16 @@ public class ShopRunViewModel  extends AndroidViewModel {
             public void onError(Exception e) {
                 e.printStackTrace();
             }
-        });
+        };
+
+        switch( getItemsOrder() ) {
+            case BY_NAME:
+                app.getShopItemsByNameAsync(cb);
+                break;
+            default:
+                app.getShopItemsByZoneAsync(cb);
+                break;
+        }
     }
 
     public void loadShopItemsSync() {

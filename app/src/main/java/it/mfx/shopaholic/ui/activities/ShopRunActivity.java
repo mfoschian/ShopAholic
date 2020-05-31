@@ -128,6 +128,18 @@ public class ShopRunActivity extends AppCompatActivity implements ShopRunListFra
                 : R.drawable.ic_visibility_off_24dp);
 
     }
+    private void setItemOrderIcon(ShopRunViewModel.ItemsOrder order, MenuItem item) {
+        switch( order ) {
+            case BY_NAME:
+                item.setIcon( R.drawable.ic_sort_by_name_24dp);
+                item.setChecked( true );
+                break;
+            case BY_ZONE: item.setIcon( R.drawable.ic_sort_by_zone_24dp );
+                item.setIcon( R.drawable.ic_sort_by_zone_24dp);
+                item.setChecked( false );
+                break;
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -136,6 +148,9 @@ public class ShopRunActivity extends AppCompatActivity implements ShopRunListFra
         MenuItem item = menu.findItem(R.id.menu_show_items_done);
         boolean isShowing = viewModel != null ? viewModel.isShowingItemsDone() : false;
         setShowItemsDoneIcon( isShowing, item);
+
+        item = menu.findItem(R.id.menu_show_items_order);
+        setItemOrderIcon( viewModel != null ? viewModel.getItemsOrder() : ShopRunViewModel.ItemsOrder.BY_ZONE, item );
         return true;
     }
 
@@ -153,7 +168,15 @@ public class ShopRunActivity extends AppCompatActivity implements ShopRunListFra
             //item.setIcon( isShowing ? R.drawable.ic_visibility_24dp : R.drawable.ic_visibility_off_24dp);
             setShowItemsDoneIcon(isShowing, item);
             viewModel.setShowItemsDone( isShowing );
-            viewModel.loadShopItems();
+            //viewModel.loadShopItems();
+            refreshUI();
+            return true;
+        }
+        else if(id == R.id.menu_show_items_order) {
+            ShopRunViewModel.ItemsOrder order = viewModel.toggleItemOrder();
+            setItemOrderIcon(order, item);
+            //viewModel.loadShopItems();
+            refreshUI();
             return true;
         }
         else if (id == android.R.id.home) {

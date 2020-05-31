@@ -249,6 +249,24 @@ public class ShopApplication extends Application {
         });
     }
 
+    public List<ShopItem> getShopItemsByName() {
+        List<ShopItem> res = db().getActiveShopItemsByName();
+        return res;
+    }
+
+    public void getShopItemsByNameAsync(@NonNull final Callback<List<ShopItem>> cb) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<ShopItem> res = getShopItemsByName();
+                    cb.onSuccess(res);
+                } catch (Exception err) {
+                    cb.onError(err);
+                }
+            }
+        });
+    }
 
     public void saveShopItems(List<ShopItem> shopItems) {
         db().saveShopItems(shopItems);

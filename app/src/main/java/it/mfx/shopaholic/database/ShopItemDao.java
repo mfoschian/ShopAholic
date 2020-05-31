@@ -30,6 +30,9 @@ public interface ShopItemDao {
     @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.zoneName, i.name")
     List<ShopItem> getActiveByZoneSync();
 
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.name, i.zoneName")
+    List<ShopItem> getActiveByNameSync();
+
     @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.zoneName, i.name")
     LiveData<List<ShopItem>> getActiveByZone();
 
