@@ -14,10 +14,10 @@ import it.mfx.shopaholic.models.Item;
 
 @Dao
 public interface ItemDao {
-    @Query("SELECT * FROM items order by name")
+    @Query("SELECT * FROM items order by name COLLATE NOCASE ASC")
     List<Item> getAllSync();
 
-    @Query("SELECT * FROM items order by name")
+    @Query("SELECT * FROM items order by name COLLATE NOCASE ASC")
     LiveData<List<Item>> getAll();
 
     @Query("SELECT * FROM items where id LIKE :id")

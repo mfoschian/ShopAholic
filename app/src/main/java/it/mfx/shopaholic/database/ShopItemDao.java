@@ -15,28 +15,28 @@ import it.mfx.shopaholic.models.ShopItem;
 
 @Dao
 public interface ShopItemDao {
-    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) order by i.name")
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) order by i.name COLLATE NOCASE ASC")
     List<ShopItem> getAllSync();
 
-    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) order by i.name")
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) order by i.name COLLATE NOCASE ASC")
     LiveData<List<ShopItem>> getAll();
 
-    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.name")
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.name COLLATE NOCASE ASC")
     List<ShopItem> getActiveSync();
 
-    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.name")
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.name COLLATE NOCASE ASC")
     LiveData<List<ShopItem>> getActive();
 
-    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.zoneName, i.name")
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.zoneName, i.name COLLATE NOCASE ASC")
     List<ShopItem> getActiveByZoneSync();
 
-    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.name, i.zoneName")
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.name COLLATE NOCASE ASC, i.zoneName")
     List<ShopItem> getActiveByNameSync();
 
-    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.zoneName, i.name")
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id is null order by i.zoneName, i.name COLLATE NOCASE ASC")
     LiveData<List<ShopItem>> getActiveByZone();
 
-    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id = :job_id order by i.name")
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.job_id = :job_id order by i.name COLLATE NOCASE ASC")
     LiveData<List<ShopItem>> getForJob(String job_id);
 
     @Query("SELECT COUNT(*) FROM shopitems where item_id = :item_id")
@@ -46,7 +46,7 @@ public interface ShopItemDao {
     @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) where s.item_id LIKE :id")
     ShopItem findByItemId(String id);
 
-    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) WHERE s.name LIKE :name order by i.name")
+    @Query("SELECT * FROM shopitems s LEFT JOIN items i ON (i.id = s.item_id) WHERE s.name LIKE :name order by i.name COLLATE NOCASE ASC")
     ShopItem findByItemName(String name);
 
     @Query("SELECT COUNT(*) from shopitems")
