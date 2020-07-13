@@ -175,7 +175,7 @@ public class ComposeListActivity extends AppCompatActivity {
 
             @Override
             public void onError(Exception e) {
-
+                Log.d("myDebug", "onError: " + e.toString());
             }
         });
 

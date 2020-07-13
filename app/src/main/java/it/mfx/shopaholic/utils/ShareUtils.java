@@ -180,7 +180,8 @@ public class ShareUtils {
     public static File saveDataToSharableFile(String data, Context ctx) {
 
         String filename = "data_shopaholic.json";
-        File folder = ctx.getFilesDir(); // + File.separator + "shared";
+        //File folder = ctx.getFilesDir(); // + File.separator + "shared";
+        File folder = ctx.getExternalFilesDir(""); // + File.separator + "shared";
         File file = null;
 
         try {
@@ -260,6 +261,7 @@ public class ShareUtils {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setType(mimeType);
         intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+        //intent.setPackage("com.whatsapp");
         //intent.setDataAndType(fileUri, mimeType);
         /**/
 
