@@ -6,8 +6,8 @@ android {
         applicationId "it.mfx.shopaholic"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 15
-        versionName "2.77"
+        versionCode 10
+        versionName "2.71"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
