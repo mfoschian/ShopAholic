@@ -1,8 +1,8 @@
 package it.mfx.shopaholic.database.migrations;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
-import android.arch.persistence.room.migration.Migration;
-import android.support.annotation.NonNull;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.room.migration.Migration;
+import androidx.annotation.NonNull;
 
 public class Migration_09_to_10 extends Migration {
     public Migration_09_to_10() {

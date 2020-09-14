@@ -1,11 +1,11 @@
 package it.mfx.shopaholic.database;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.persistence.room.Database;
+import androidx.lifecycle.LiveData;
+import androidx.room.Database;
 
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.migration.Migration;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
 import android.content.Context;
 
 import java.util.List;
